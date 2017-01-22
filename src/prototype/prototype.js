@@ -28,8 +28,8 @@ function loadScript(url, callback)
 externs = { };
 loadScript('external.json');
 
-loadScript('lib/helpers.js');
-loadScript('lib/crafty-extensions.js');
-loadScript('lib/actor.js');
-loadScript('lib/spawner.js');
-loadScript('lib/console.js');
+loadScript('src/prototype/helpers.js');
+loadScript('src/prototype/crafty-extensions.js');
+loadScript('src/prototype/actor.js');
+loadScript('src/prototype/spawner.js');
+loadScript('src/prototype/console.js');
