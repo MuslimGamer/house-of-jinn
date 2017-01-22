@@ -14,12 +14,18 @@
 		<script type="text/javascript">
  			Game = {
 
+        view: {
+					// full-screen
+          width: window.innerWidth,
+          height: window.innerHeight
+        },
+
         start: function() {
-          Crafty.init(window.innerWidth, window.innerHeight);
+          Crafty.init(Game.view.width, Game.view.height);
 					Crafty.background('#008800')
 
           var e = Crafty.e('Actor')
-            .size(64, 64)
+            .size(32, 32)
 						.color('red')
             .move(100, 100)
 						.controllable();
