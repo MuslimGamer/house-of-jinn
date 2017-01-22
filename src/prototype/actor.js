@@ -77,8 +77,10 @@ Crafty.c('Actor', {
   },
 
   // Responds to user input; speed = pixels per second
-  controllable: function(speed) {
-    this.requires('Fourway').fourway(speed);
+  controllable: function(speed) {    
+    this.requires('Fourway').fourway(speed); // Keyboard    
+    this.requires("GamepadMultiway").gamepadMultiway({ "speed": speed }); // Gamepad via web gamepad API
+
     return this;
   },
 

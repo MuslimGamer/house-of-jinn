@@ -32,4 +32,4 @@ loadScript('src/prototype/helpers.js');
 loadScript('src/prototype/crafty-extensions.js');
 loadScript('src/prototype/actor.js');
 loadScript('src/prototype/spawner.js');
-loadScript('src/prototype/console.js');
+loadScript('lib/gamepad.js');
