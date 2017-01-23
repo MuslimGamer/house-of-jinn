@@ -26,6 +26,8 @@ function loadScript(url, callback)
 
 // Load externs. If the file is missing, use an empty hash.
 externs = { };
+// Define a file called external.json with contents:
+// externs = { ... json ... }
 loadScript('external.json');
 
 loadScript('src/prototype/helpers.js');

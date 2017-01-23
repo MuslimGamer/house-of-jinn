@@ -22,10 +22,19 @@
         },
 
         start: function() {
+					// Game world is whatever fits on-screen
           Crafty.init(Game.view.width, Game.view.height);
 					Crafty.background('#008800');
 
           var e = Crafty.e('Player');
+					//  House: four walls and random internal walls
+					var houseWidth = config("mansion_width");
+					var houseHeight = config("mansion_height");
+					console.log("Mansion is " + houseWidth + "x" + houseHeight);
+
+					// Follow player around with camera
+					Crafty.viewport.follow(e);
+					Crafty.viewport.centerOn(e);
         }
       }
 
