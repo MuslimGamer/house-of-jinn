@@ -4,6 +4,7 @@ Crafty.c('Player', {
             .size(32, 32)
             .color('red')
             .move(100, 100)
-			.controllable();
+			.controllable()
+            .collideWith("Wall");
     }
 });

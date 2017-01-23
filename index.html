@@ -10,6 +10,7 @@
 		<script src="lib/crafty-0.7.1.min.js" type="text/javascript"></script>
 		<script src="src/prototype/prototype.js" type="text/javascript"></script>
 		<script src="src/entities/player.js" type="text/javascript"></script>
+		<script src="src/entities/wall.js" type="text/javascript"></script>
 
     <!-- Core game -->
 		<script type="text/javascript">
@@ -26,11 +27,18 @@
           Crafty.init(Game.view.width, Game.view.height);
 					Crafty.background('#008800');
 
-          var e = Crafty.e('Player');
+          var e = Crafty.e("Player");
 					//  House: four walls and random internal walls
+					// Total exterior size (including walls)
 					var houseWidth = config("mansion_width");
 					var houseHeight = config("mansion_height");
+					var wallThickness = config("wall_thickness");
+
 					console.log("Mansion is " + houseWidth + "x" + houseHeight);
+					Crafty.e("Wall").size(houseWidth, wallThickness);
+					Crafty.e("Wall").size(houseWidth, wallThickness).move(0, houseHeight - wallThickness);
+					Crafty.e("Wall").size(wallThickness, houseHeight);
+					Crafty.e("Wall").size(wallThickness, houseHeight).move(houseWidth - wallThickness, 0);
 
 					// Follow player around with camera
 					Crafty.viewport.follow(e);

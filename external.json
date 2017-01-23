@@ -1,4 +1,5 @@
 externs = {
     "mansion_width": 1024,
-    "mansion_height": 576
+    "mansion_height": 576,
+    "wall_thickness": 8
 }
