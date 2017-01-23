@@ -1,5 +1,5 @@
 Crafty.c('Wall', {
-    init: function(width, height) {
+    init: function() {
         this.requires('Actor').color('#443300');
     }
 });

@@ -30,11 +30,10 @@
           var e = Crafty.e("Player");
 					//  House: four walls and random internal walls
 					// Total exterior size (including walls)
-					var houseWidth = config("mansion_width");
-					var houseHeight = config("mansion_height");
-					var wallThickness = config("wall_thickness");
+					var houseWidth = parseInt(config("mansion_width"));
+					var houseHeight = parseInt(config("mansion_height"));
+					var wallThickness = parseInt(config("wall_thickness"));
 
-					console.log("Mansion is " + houseWidth + "x" + houseHeight);
 					Crafty.e("Wall").size(houseWidth, wallThickness);
 					Crafty.e("Wall").size(houseWidth, wallThickness).move(0, houseHeight - wallThickness);
 					Crafty.e("Wall").size(wallThickness, houseHeight);
