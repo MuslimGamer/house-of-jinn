@@ -48,6 +48,8 @@
 					Crafty.e("WallWithDoor").create(wallThickness, houseHeight / 2, houseWidth / 2, 0); // top
 					Crafty.e("WallWithDoor").create(wallThickness, houseHeight / 2, houseWidth / 2, houseHeight / 2); // bottom
 
+					Crafty.e("Key").move(houseWidth / 4, houseHeight * 3 / 4);
+
 					// Follow player around with camera
 					Crafty.viewport.follow(e);
 					Crafty.viewport.centerOn(e);

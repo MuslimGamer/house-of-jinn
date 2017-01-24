@@ -2,13 +2,15 @@
 
 Crafty.c('Door', {
     init: function() {
-        this.requires("Actor").color('#0088dd').size(DOOR_SIZE, 16);
+        this.requires("Actor").color('#dddddd').size(DOOR_SIZE, 16);
         this.isLocked = false;
     },
     
     lock: function()
     {
         this.isLocked = true;
+        this.color("#ffbb00");
+        return this;
     },
 
     vertical: function() {
