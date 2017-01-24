@@ -41,9 +41,9 @@ Crafty.c("WallWithDoor", {
             w1.x = x;
             w1.y = y;
             door.x = w1.x + w1.width();
-            door.y = w1.y;
+            door.y = w1.y - door.height() / 4;
             w2.x = door.x + door.width();
-            w2.y = door.y;
+            w2.y = w1.y;
         }
         else
         {
@@ -53,9 +53,9 @@ Crafty.c("WallWithDoor", {
             var w2 = Crafty.e("Wall").size(width, wallSize);
             w1.x = x;
             w1.y = y;
-            door.x = w1.x;
+            door.x = w1.x - door.width() / 4;
             door.y = w1.y + w1.height();
-            w2.x = door.x;
+            w2.x = w1.x;
             w2.y = door.y + door.height();
         }
     }
