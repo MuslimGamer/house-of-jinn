@@ -11,6 +11,8 @@
 		<script src="src/prototype/prototype.js" type="text/javascript"></script>
 		<script src="src/entities/player.js" type="text/javascript"></script>
 		<script src="src/entities/wall.js" type="text/javascript"></script>
+		<script src="src/entities/door.js" type="text/javascript"></script>
+		<script src="src/entities/items.js" type="text/javascript"></script>
 
     <!-- Core game -->
 		<script type="text/javascript">
@@ -41,7 +43,7 @@
 
 					// Divide into 2x2 rooms. This will be replaced with PCG later.
 					// Walls are + shaped: left, right, top, bottom
-					Crafty.e("WallWithDoor").create(houseWidth / 2, wallThickness, 0, houseHeight / 2); // left
+					Crafty.e("WallWithDoor").create(houseWidth / 2, wallThickness, 0, houseHeight / 2).lock(); // left
 					Crafty.e("WallWithDoor").create(houseWidth / 2, wallThickness, houseWidth / 2, houseHeight / 2); // right
 					Crafty.e("WallWithDoor").create(wallThickness, houseHeight / 2, houseWidth / 2, 0); // top
 					Crafty.e("WallWithDoor").create(wallThickness, houseHeight / 2, houseWidth / 2, houseHeight / 2); // bottom
