@@ -34,10 +34,16 @@
 					var houseHeight = parseInt(config("mansion_height"));
 					var wallThickness = parseInt(config("wall_thickness"));
 
+					/*
 					Crafty.e("Wall").size(houseWidth, wallThickness);
 					Crafty.e("Wall").size(houseWidth, wallThickness).move(0, houseHeight - wallThickness);
 					Crafty.e("Wall").size(wallThickness, houseHeight);
 					Crafty.e("Wall").size(wallThickness, houseHeight).move(houseWidth - wallThickness, 0);
+					*/
+
+					// Divide into 2x2 rooms. This will be replaced with PCG later.
+					Crafty.e("WallWithDoor").create(houseWidth, wallThickness);
+					Crafty.e("WallWithDoor").create(wallThickness, houseHeight);
 
 					// Follow player around with camera
 					Crafty.viewport.follow(e);
