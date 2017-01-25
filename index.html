@@ -11,7 +11,7 @@
 		<script src="src/prototype/prototype.js" type="text/javascript"></script>
 		<script src="src/entities/player.js" type="text/javascript"></script>
 		<script src="src/entities/wall.js" type="text/javascript"></script>
-		<script src="src/entities/door.js" type="text/javascript"></script>
+		<script src="src/entities/room.js" type="text/javascript"></script>
 		<script src="src/entities/items.js" type="text/javascript"></script>
 
     <!-- Core game -->
@@ -30,25 +30,15 @@
 					Crafty.background('#008800');
 
           var e = Crafty.e("Player");
+					
 					//  House: four walls and random internal walls
 					// Total exterior size (including walls)
 					var houseWidth = parseInt(config("mansion_width"));
 					var houseHeight = parseInt(config("mansion_height"));
-					var wallThickness = parseInt(config("wall_thickness"));
-
-					Crafty.e("Wall").size(houseWidth, wallThickness);
-					Crafty.e("Wall").size(houseWidth, wallThickness).move(0, houseHeight - wallThickness);
-					Crafty.e("Wall").size(wallThickness, houseHeight);
-					Crafty.e("Wall").size(wallThickness, houseHeight).move(houseWidth - wallThickness, 0);
-
-					// Divide into 2x2 rooms. This will be replaced with PCG later.
-					// Walls are + shaped: left, right, top, bottom
-					Crafty.e("WallWithDoorway").create(houseWidth / 2, wallThickness, 0, houseHeight / 2).door().lock(); // left
-					Crafty.e("WallWithDoorway").create(houseWidth / 2, wallThickness, houseWidth / 2, houseHeight / 2).door(); // right
-					Crafty.e("WallWithDoorway").create(wallThickness, houseHeight / 2, houseWidth / 2, 0).door(); // top
-					Crafty.e("WallWithDoorway").create(wallThickness, houseHeight / 2, houseWidth / 2, houseHeight / 2).door(); // bottom
-
-					Crafty.e("Key").move(houseWidth / 4, houseHeight * 3 / 4);
+					Crafty.e("Room").create(0, 0, houseWidth / 2, houseHeight / 2).door().lock(); // top-left 
+					Crafty.e("Room").create(houseWidth / 2, 0, houseWidth / 2, houseHeight / 2); // top-right
+					Crafty.e("Room").create(0, houseHeight / 2, houseWidth / 2, houseHeight / 2); // bottom-left
+					Crafty.e("Room").create(houseWidth / 2, houseHeight / 2, houseWidth / 2, houseHeight / 2); // bottom-right
 
 					// Follow player around with camera
 					Crafty.viewport.follow(e);
