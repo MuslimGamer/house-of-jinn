@@ -43,10 +43,10 @@
 
 					// Divide into 2x2 rooms. This will be replaced with PCG later.
 					// Walls are + shaped: left, right, top, bottom
-					Crafty.e("WallWithDoor").create(houseWidth / 2, wallThickness, 0, houseHeight / 2).lock(); // left
-					Crafty.e("WallWithDoor").create(houseWidth / 2, wallThickness, houseWidth / 2, houseHeight / 2); // right
-					Crafty.e("WallWithDoor").create(wallThickness, houseHeight / 2, houseWidth / 2, 0); // top
-					Crafty.e("WallWithDoor").create(wallThickness, houseHeight / 2, houseWidth / 2, houseHeight / 2); // bottom
+					Crafty.e("WallWithDoorway").create(houseWidth / 2, wallThickness, 0, houseHeight / 2).door().lock(); // left
+					Crafty.e("WallWithDoorway").create(houseWidth / 2, wallThickness, houseWidth / 2, houseHeight / 2).door(); // right
+					Crafty.e("WallWithDoorway").create(wallThickness, houseHeight / 2, houseWidth / 2, 0).door(); // top
+					Crafty.e("WallWithDoorway").create(wallThickness, houseHeight / 2, houseWidth / 2, houseHeight / 2).door(); // bottom
 
 					Crafty.e("Key").move(houseWidth / 4, houseHeight * 3 / 4);
 
