@@ -1,5 +1,5 @@
 const DOOR_LENGTH = 64; // longer side
-const DOOR_WIDTH = 16; // shorter side
+const DOOR_WIDTH = 8; // shorter side
 
 Crafty.c('Wall', {
     init: function() {
@@ -76,9 +76,9 @@ Crafty.c("WallWithDoorway", {
         filler.move(this.doorwayX, this.doorwayY).size(DOOR_LENGTH, DOOR_WIDTH);
         if (this.orientation == "vertical") {
             filler.size(DOOR_WIDTH, DOOR_LENGTH);
-            filler.move(filler.x - DOOR_WIDTH / 2, filler.y);
+            filler.move(filler.x, filler.y);
         } else {
-            filler.move(filler.x, filler.y - DOOR_WIDTH / 2);
+            filler.move(filler.x, filler.y);
         }
         return this;
     }
