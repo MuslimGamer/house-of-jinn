@@ -7,6 +7,7 @@ Crafty.c("Room", {
         this.height = height;
 
         var wallThickness = parseInt(config("wall_thickness"));
+        this.floor = Crafty.e("Actor").size(width, height).move(x, y).color("grey");
         this.top = Crafty.e("WallWithDoorway").create(x, y, width, wallThickness);
         this.bottom = Crafty.e("WallWithDoorway").create(x, y + height - wallThickness, width, wallThickness);
         this.left = Crafty.e("WallWithDoorway").create(x, y, wallThickness, height);

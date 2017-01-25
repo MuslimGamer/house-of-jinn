@@ -9,6 +9,8 @@ Crafty.c('Player', {
             .move(100, 100)
 			.controllable()
             .collideWith("Wall");
+
+        this.z = 1; // on top of floors
         
         // Resolve so that we stop moving
         this.collideWith("Door", function(data) {
