@@ -1,5 +1,5 @@
-const DOOR_LENGTH = 64;
-const DOOR_WIDTH = 16;
+const DOOR_LENGTH = 64; // longer side
+const DOOR_WIDTH = 16; // shorter side
 
 Crafty.c('Wall', {
     init: function() {
@@ -20,7 +20,7 @@ Crafty.c('Door', {
     },
 
     vertical: function() {
-        this.size(16, DOOR_LENGTH);
+        this.size(DOOR_WIDTH, DOOR_LENGTH);
         return this;
     },
 })
@@ -44,7 +44,7 @@ Crafty.c("WallWithDoorway", {
             w2.y = w1.y;
 
             this.doorwayX = w1.x + w1.width();
-            this.doorwayY = w1.y ;
+            this.doorwayY = w1.y;
         } else {
             this.orientation = "vertical";
             var wallSize = (height - DOOR_LENGTH) / 2;
@@ -55,7 +55,7 @@ Crafty.c("WallWithDoorway", {
             w2.x = w1.x;
             w2.y = y + height - w2.height();
 
-            this.doorwayX = w1.x ;
+            this.doorwayX = w1.x;
             this.doorwayY = w1.y + w1.height();            
         }
         return this;
@@ -68,5 +68,18 @@ Crafty.c("WallWithDoorway", {
             door.vertical();
         }
         return door;
+    },
+
+    wall: function()
+    {
+        var filler = Crafty.e("Wall");
+        filler.move(this.doorwayX, this.doorwayY).size(DOOR_LENGTH, DOOR_WIDTH);
+        if (this.orientation == "vertical") {
+            filler.size(DOOR_WIDTH, DOOR_LENGTH);
+            filler.move(filler.x - DOOR_WIDTH / 2, filler.y);
+        } else {
+            filler.move(filler.x, filler.y - DOOR_WIDTH / 2);
+        }
+        return this;
     }
 });

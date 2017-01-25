@@ -35,10 +35,10 @@
 					// Total exterior size (including walls)
 					var houseWidth = parseInt(config("mansion_width"));
 					var houseHeight = parseInt(config("mansion_height"));
-					Crafty.e("Room").create(0, 0, houseWidth / 2, houseHeight / 2).door().lock(); // top-left 
-					Crafty.e("Room").create(houseWidth / 2, 0, houseWidth / 2, houseHeight / 2); // top-right
-					Crafty.e("Room").create(0, houseHeight / 2, houseWidth / 2, houseHeight / 2); // bottom-left
-					Crafty.e("Room").create(houseWidth / 2, houseHeight / 2, houseWidth / 2, houseHeight / 2); // bottom-right
+					Crafty.e("Room").create(0, 0, houseWidth / 2, houseHeight / 2).seal("nw"); // top-left 
+					Crafty.e("Room").create(houseWidth / 2, 0, houseWidth / 2, houseHeight / 2).seal("ne"); // top-right
+					Crafty.e("Room").create(0, houseHeight / 2, houseWidth / 2, houseHeight / 2).seal("sw"); // bottom-left
+					Crafty.e("Room").create(houseWidth / 2, houseHeight / 2, houseWidth / 2, houseHeight / 2).seal("se"); // bottom-right
 
 					// Follow player around with camera
 					Crafty.viewport.follow(e);
