@@ -1,6 +1,11 @@
 Crafty.c("Room", {
     // Create a room precisely contained within this size
     create: function(x, y, width, height) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+
         var wallThickness = parseInt(config("wall_thickness"));
         this.top = Crafty.e("WallWithDoorway").create(x, y, width, wallThickness);
         this.bottom = Crafty.e("WallWithDoorway").create(x, y + height - wallThickness, width, wallThickness);
@@ -9,6 +14,7 @@ Crafty.c("Room", {
         return this;
     },
 
+    // Seals off the gap in the given direction (nsew)
     seal: function(directions) {
         if (directions.indexOf("n") >= 0) {
             this.top.wall();
@@ -25,6 +31,7 @@ Crafty.c("Room", {
         return this;
     },
 
+    // Creates doors in the given direction (nsew)
     door: function(directions) {
         if (directions.indexOf("n") >= 0) {
             var door = this.top.door();
@@ -45,6 +52,7 @@ Crafty.c("Room", {
         return this;
     },
 
+    // Locks doors in the given direction (nsew)
     lock: function(directions) {
         if (directions.indexOf("n") >= 0) {
             var door = this.top.filler;
@@ -63,5 +71,15 @@ Crafty.c("Room", {
             door.lock();
         }
         return this;
+    },
+
+    items: function(list) {
+        var wallThickness = parseInt(config("wall_thickness"));
+        for (var i = 0; i < list.length; i++) {
+            var item = list[i];
+            var itemX = randomBetween(this.x + wallThickness, this.x + this.width - wallThickness);
+            var itemY = randomBetween(this.y + wallThickness, this.y + this.height - wallThickness);
+            Crafty.e(item).move(itemX, itemY);
+        }
     }
 });
