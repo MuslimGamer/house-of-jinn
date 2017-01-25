@@ -36,11 +36,31 @@ Crafty.c("Room", {
         }
         if (directions.indexOf("s") >= 0) {
             var door = this.bottom.door();
-             door.move(door.x, door.y + DOOR_WIDTH / 2);
+            door.move(door.x, door.y + DOOR_WIDTH / 2);
         }
         if (directions.indexOf("e") >= 0) {
             var door = this.right.door();
             door.move(door.x + DOOR_WIDTH / 2, door.y);
+        }
+        return this;
+    },
+
+    lock: function(directions) {
+        if (directions.indexOf("n") >= 0) {
+            var door = this.top.filler;
+            door.lock();
+        }
+        if (directions.indexOf("w") >= 0) {
+            var door = this.left.filler;
+            door.lock();
+        }
+        if (directions.indexOf("s") >= 0) {
+            var door = this.bottom.filler;
+            door.lock();
+        }
+        if (directions.indexOf("e") >= 0) {
+            var door = this.right.filler;
+            door.lock();
         }
         return this;
     }

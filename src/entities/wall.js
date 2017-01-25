@@ -62,23 +62,23 @@ Crafty.c("WallWithDoorway", {
     },
 
     door: function() {
-        var door = Crafty.e("Door").move(this.doorwayX, this.doorwayY);
+        this.filler = Crafty.e("Door").move(this.doorwayX, this.doorwayY);
         if (this.orientation == "vertical")
         {
-            door.vertical();
+            this.filler.vertical();
         }
-        return door;
+        return this.filler; // chain so you can lock it
     },
 
     wall: function()
     {
-        var filler = Crafty.e("Wall");
-        filler.move(this.doorwayX, this.doorwayY).size(DOOR_LENGTH, DOOR_WIDTH);
+        this.filler = Crafty.e("Wall");
+        this.filler.move(this.doorwayX, this.doorwayY).size(DOOR_LENGTH, DOOR_WIDTH);
         if (this.orientation == "vertical") {
-            filler.size(DOOR_WIDTH, DOOR_LENGTH);
-            filler.move(filler.x, filler.y);
+            this.filler.size(DOOR_WIDTH, DOOR_LENGTH);
+            this.filler.move(this.filler.x, this.filler.y);
         } else {
-            filler.move(filler.x, filler.y);
+            this.filler.move(this.filler.x, this.filler.y);
         }
         return this;
     }
