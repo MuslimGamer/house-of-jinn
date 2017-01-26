@@ -11,6 +11,7 @@ Crafty.c('Player', {
             .collideWith("Wall");
 
         this.z = 1; // on top of floors
+        this.currentRoom = Crafty.first("Room");
         
         // Resolve so that we stop moving
         this.collideWith("Door", function(data) {
@@ -24,6 +25,19 @@ Crafty.c('Player', {
             } else {
                 console.log("Locked.");
             }
-        })
+        });
+
+        this.bind("Moved", function(oldPosition) {            
+            // Use AABB to figure out what room the player is in. Light the first one found.
+            // When the player straddles two rooms, well ... we're toast, that's what.
+            Crafty.forEach("Room", function(room) {
+                if (self.x >= room.x && self.y >= room.y && 
+                self.x + self.width() <= room.x + room.width &&
+                self.y + self.height() <= room.y + room.height) {
+                    self.currentRoom = room;
+                    return;
+                }
+            });
+        });
     }
 });
