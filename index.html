@@ -29,8 +29,6 @@
 					// Game world is whatever fits on-screen
           Crafty.init(Game.view.width, Game.view.height);
 					Crafty.background('#008800');
-
-          var e = Crafty.e("Player");
 					
 					//  House: four walls and random internal walls
 					// Total exterior size (including walls)
@@ -39,13 +37,14 @@
 					Crafty.e("Room").create(0, 0, houseWidth / 2, houseHeight / 2).seal("nw").door("s").lock("s"); // top-left 
 					Crafty.e("Room").create(houseWidth / 2, 0, houseWidth / 2, houseHeight / 2).seal("ne").door("w"); // top-right
 					Crafty.e("Room").create(0, houseHeight / 2, houseWidth / 2, houseHeight / 2).seal("sw").door("e").addItems(["Key"]); // bottom-left
-					Crafty.e("Room").create(houseWidth / 2, houseHeight / 2, houseWidth / 2, houseHeight / 2).seal("se").door("n"); // bottom-right
+					Crafty.e("Room").create(houseWidth / 2, houseHeight / 2, houseWidth / 2, houseHeight / 2).seal("se").door("n"); // bottom-right					
 
+					Crafty.e("Darkness");
+          
+					var e = Crafty.e("Player");
 					// Follow player around with camera
 					Crafty.viewport.follow(e);
 					Crafty.viewport.centerOn(e);
-
-					Crafty.e("Darkness");
         }
       }
 

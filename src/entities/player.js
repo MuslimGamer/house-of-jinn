@@ -27,7 +27,7 @@ Crafty.c('Player', {
             }
         });
 
-        this.bind("Moved", function(oldPosition) {            
+        this.bind("Moved", function(oldPosition) {     
             // Use AABB to figure out what room the player is in. Light the first one found.
             // When the player straddles two rooms, we pick the first room that fully encloses
             // the player. There's no such room. So currentRoom stays at the old room. Nicely done.
@@ -46,5 +46,8 @@ Crafty.c('Player', {
                 }
             });
         });
+
+        // Pretend we moved: trigger lighting up the current room
+        Crafty.trigger("Moved", { "axis": "x", "oldValue": this.x });
     }
 });
