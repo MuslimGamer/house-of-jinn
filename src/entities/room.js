@@ -5,6 +5,8 @@ Crafty.c("Room", {
         this.y = y;
         this.width = width;
         this.height = height;
+        this.items = [];
+        this.isLit = false;
 
         var wallThickness = parseInt(config("wall_thickness"));
         this.floor = Crafty.e("Actor").size(width, height).move(x, y).color("grey");
@@ -12,6 +14,7 @@ Crafty.c("Room", {
         this.bottom = Crafty.e("WallWithDoorway").create(x, y + height - wallThickness, width, wallThickness);
         this.left = Crafty.e("WallWithDoorway").create(x, y, wallThickness, height);
         this.right = Crafty.e("WallWithDoorway").create(x + width - wallThickness, y, wallThickness, height);
+        
         return this;
     },
 
@@ -74,13 +77,45 @@ Crafty.c("Room", {
         return this;
     },
 
-    items: function(list) {
+    // Add items to this room, randomly-positioned
+    addItems: function(list) {
         var wallThickness = parseInt(config("wall_thickness"));
         for (var i = 0; i < list.length; i++) {
             var item = list[i];
             var itemX = randomBetween(this.x + wallThickness, this.x + this.width - wallThickness);
             var itemY = randomBetween(this.y + wallThickness, this.y + this.height - wallThickness);
-            Crafty.e(item).move(itemX, itemY);
+            this.items.push(Crafty.e(item).move(itemX, itemY));
+        }
+    },
+
+    light: function() {
+        if (!this.isLit) {
+            this.isLit = true;
+            var darknessZ = Crafty.single("Darkness").z;
+
+            this.floor.z = darknessZ + 1;
+            this.top.z(darknessZ + 2);
+            this.bottom.z(darknessZ + 2);
+            this.left.z(darknessZ + 2);
+            this.right.z(darknessZ + 2);
+            for (var i = 0; i < this.items.length; i++) {
+                this.items[i].z = darknessZ + 2;
+            }
+        }
+    },
+
+    darken: function() {
+        if (this.isLit) {
+            this.isLit = false;
+
+            this.floor.z = 0;
+            this.top.z(1);
+            this.bottom.z(1);
+            this.left.z(1);
+            this.right.z(1);
+            for (var i = 0; i < this.items.length; i++) {
+                this.items[i].z = 2;
+            }
         }
     }
 });

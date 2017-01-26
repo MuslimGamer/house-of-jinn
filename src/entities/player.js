@@ -10,7 +10,7 @@ Crafty.c('Player', {
 			.controllable()
             .collideWith("Wall");
 
-        this.z = 1; // on top of floors
+        this.z = 1000; // on top of floors
         this.currentRoom = Crafty.first("Room");
         
         // Resolve so that we stop moving
@@ -29,13 +29,20 @@ Crafty.c('Player', {
 
         this.bind("Moved", function(oldPosition) {            
             // Use AABB to figure out what room the player is in. Light the first one found.
-            // When the player straddles two rooms, well ... we're toast, that's what.
+            // When the player straddles two rooms, we pick the first room that fully encloses
+            // the player. There's no such room. So currentRoom stays at the old room. Nicely done.
+            var foundRoom = false;
             Crafty.forEach("Room", function(room) {
-                if (self.x >= room.x && self.y >= room.y && 
-                self.x + self.width() <= room.x + room.width &&
-                self.y + self.height() <= room.y + room.height) {
-                    self.currentRoom = room;
-                    return;
+                if (!foundRoom) {
+                    if (self.x >= room.x && self.y >= room.y && 
+                    self.x + self.width() <= room.x + room.width &&
+                    self.y + self.height() <= room.y + room.height) {
+                        self.currentRoom = room;
+                        self.currentRoom.light();
+                        foundRoom = true;
+                    } else {
+                        room.darken();
+                    }
                 }
             });
         });

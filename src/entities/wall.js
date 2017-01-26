@@ -36,27 +36,27 @@ Crafty.c("WallWithDoorway", {
         if (width > height) {
             this.orientation = "horizontal";
             var wallSize = (width - DOOR_LENGTH) / 2;
-            var w1 = Crafty.e("Wall").size(wallSize, height);
-            var w2 = Crafty.e("Wall").size(wallSize, height);
-            w1.x = x;
-            w1.y = y;
-            w2.x = x + width - w2.width();
-            w2.y = w1.y;
+            this.w1 = Crafty.e("Wall").size(wallSize, height);
+            this.w2 = Crafty.e("Wall").size(wallSize, height);
+            this.w1.x = x;
+            this.w1.y = y;
+            this.w2.x = x + width - this.w2.width();
+            this.w2.y = this.w1.y;
 
-            this.doorwayX = w1.x + w1.width();
-            this.doorwayY = w1.y;
+            this.doorwayX = this.w1.x + this.w1.width();
+            this.doorwayY = this.w1.y;
         } else {
             this.orientation = "vertical";
             var wallSize = (height - DOOR_LENGTH) / 2;
-            var w1 = Crafty.e("Wall").size(width, wallSize);
-            var w2 = Crafty.e("Wall").size(width, wallSize);
-            w1.x = x;
-            w1.y = y;
-            w2.x = w1.x;
-            w2.y = y + height - w2.height();
+            this.w1 = Crafty.e("Wall").size(width, wallSize);
+            this.w2 = Crafty.e("Wall").size(width, wallSize);
+            this.w1.x = x;
+            this.w1.y = y;
+            this.w2.x = this.w1.x;
+            this.w2.y = y + height - this.w2.height();
 
-            this.doorwayX = w1.x;
-            this.doorwayY = w1.y + w1.height();            
+            this.doorwayX = this.w1.x;
+            this.doorwayY = this.w1.y + this.w1.height();            
         }
         return this;
     },
@@ -81,5 +81,13 @@ Crafty.c("WallWithDoorway", {
             this.filler.move(this.filler.x, this.filler.y);
         }
         return this;
+    },
+
+    z: function(value) {
+        this.w1.z = value;
+        this.w2.z = value;
+        if (typeof(this.filler) != "undefined") {
+            this.filler.z = value;
+        }
     }
 });
