@@ -1,4 +1,4 @@
-Crafty.c("room",{
+Crafty.c("proto_room",{
 	//Room identifier
 	id:0,						//Unique ID code, references index of locations array
 	x:0,						//Virtual X-Y position for spacial cohesion of generated rooms. 
@@ -70,7 +70,7 @@ Crafty.c("room",{
 
 Crafty.c("Enterance",{
 	init: function(){
-		this.requires('room')
+		this.requires('proto_room')
 		.attr({
 			id: map.locations.length,
 			Type:"Enterance",
@@ -82,7 +82,7 @@ Crafty.c("Enterance",{
 
 Crafty.c("Hallway",{
 	init: function(){
-		this.requires('room')
+		this.requires('proto_room')
 		.attr({
 			id: map.locations.length,
 			Type:"Hallway",
@@ -94,7 +94,7 @@ Crafty.c("Hallway",{
 
 Crafty.c("Living",{
 	init: function(){
-		this.requires('room')
+		this.requires('proto_room')
 		.attr({
 			id: map.locations.length,
 			Type:"Living",
@@ -106,7 +106,7 @@ Crafty.c("Living",{
 
 Crafty.c("Dining",{
 	init: function(){
-		this.requires('room')
+		this.requires('proto_room')
 		.attr({
 			id: map.locations.length,
 			Type:"Dining",
@@ -118,7 +118,7 @@ Crafty.c("Dining",{
 
 Crafty.c("Kitchen",{
 	init: function(){
-		this.requires('room')
+		this.requires('proto_room')
 		.attr({
 			id: map.locations.length,
 			Type:"Kitchen",
@@ -130,7 +130,7 @@ Crafty.c("Kitchen",{
 
 Crafty.c("Study",{
 	init: function(){
-		this.requires('room')
+		this.requires('proto_room')
 		.attr({
 			id: map.locations.length,
 			Type:"Study",
@@ -142,7 +142,7 @@ Crafty.c("Study",{
 
 Crafty.c("Bed_Large",{
 	init: function(){
-		this.requires('room')
+		this.requires('proto_room')
 		.attr({
 			id: map.locations.length,
 			Type:"Bed_Large",
@@ -154,7 +154,7 @@ Crafty.c("Bed_Large",{
 
 Crafty.c("Bath_Large",{
 	init: function(){
-		this.requires('room')
+		this.requires('proto_room')
 		.attr({
 			id: map.locations.length,
 			Type:"Bath_Large",
@@ -166,7 +166,7 @@ Crafty.c("Bath_Large",{
 
 Crafty.c("Bed_Small",{
 	init: function(){
-		this.requires('room')
+		this.requires('proto_room')
 		.attr({
 			id: map.locations.length,
 			Type:"Bed_Small",

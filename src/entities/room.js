@@ -1,3 +1,4 @@
+
 Crafty.c("Room", {
     // Create a room precisely contained within this size
     create: function(x, y, width, height) {
