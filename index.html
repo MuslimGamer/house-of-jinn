@@ -14,7 +14,7 @@
 		<script src="src/entities/wall.js" type="text/javascript"></script>
 		<script src="src/entities/room.js" type="text/javascript"></script>
 		<script src="src/entities/map.js" type="text/javascript"></script>
-			<script src="src/entities/room-gen.js" type="text/javascript"></script>
+		<script src="src/entities/room-gen.js" type="text/javascript"></script>
 		<script src="src/entities/items.js" type="text/javascript"></script>
 		<script src="src/entities/darkness.js" type="text/javascript"></script>
     <!-- Core game -->
@@ -29,41 +29,51 @@
 
         start: function() {
 					// Game world is whatever fits on-screen
+			alert("Start");
         	Crafty.init(Game.view.width, Game.view.height);
 			Crafty.background('#008800');
-			//alert("Starting")
+			alert("Making map object");
+			map = Crafty.e("Map");
+			alert("Generating map");
 			map.generate();
 			alert("Map generated, "+map.locations.length+" Rooms generated");
 					
 			//  House: four walls and random internal walls
 			// Total exterior size (including walls)
-			//var houseWidth = parseInt(config("mansion_width"));
-			//var houseHeight = parseInt(config("mansion_height"));
-			var roomWidth = Game.view.width/3
-			var roomHeight = Game.view.height/3
-			
-			//roomdraw = ID of room to draw
+			var houseWidth = parseInt(config("mansion_width"));
+			var houseHeight = parseInt(config("mansion_height"));
 			for(var roomdraw = 0; roomdraw < map.locations.length;roomdraw++){
-			
-				//Generate Room object using strings generated above from checking neighbouring locations
-				//Defining room dimenions as 1/3 of screen dimensions. Plan to shift room locations on transition to keep player room centered on screen
-				newroom=Crafty.e("Room").create(map.locations[roomdraw].x*roomWidth, map.locations[roomdraw].y*roomHeight,roomWidth,roomHeight)
-				if(map.locations[roomdraw].WallString!=''){newroom.seal(map.locations[roomdraw].WallString);}
-				if(map.locations[roomdraw].DoorString!=''){newroom.door(map.locations[roomdraw].DoorString);}
-				if(map.locations[roomdraw].OpenString!=''){newroom.open(map.locations[roomdraw].OpenString);}
-				//.lock(Lockstring);
-				
+				newroom=Crafty.e("Room").create(map.locations[roomdraw].x*300, map.locations[roomdraw].y*300,300,300);
+				//Todo: Replace .N,S,E,W attributes with array. Replace below with for loop instead of copy-paste conditionals
+						
+				if (map.locations[roomdraw].N == 0){newroom.seal("n");}
+				else{
+					if(map.locations[map.locations[roomdraw].N].Type!=map.locations[roomdraw].Type]){newroom.door("n");}
+				}
+				if (map.locations[roomdraw].S == 0){newroom.seal("s");}
+				else{
+					if(map.locations[map.locations[roomdraw].N].Type!=map.locations[roomdraw].Type]){newroom.door("n");}
+				}
+				if (map.locations[roomdraw].E == 0){newroom.seal("e");}
+				else{
+					if(map.locations[map.locations[roomdraw].N].Type!=map.locations[roomdraw].Type]){newroom.door("n");}
+				}
+				if (map.locations[roomdraw].W == 0){newroom.seal("w");}
+				else{
+					if(map.locations[map.locations[roomdraw].N].Type!=map.locations[roomdraw].Type]){newroom.door("n");}
+				}
 			}
-		//	Crafty.e("Room").create(0, 0, houseWidth / 2, houseHeight / 2).seal("nw").door("s").lock("s"); // top-left 
-		//	Crafty.e("Room").create(houseWidth / 2, 0, houseWidth / 2, houseHeight / 2).seal("ne").door("w"); // top-right
-		//	Crafty.e("Room").create(0, houseHeight / 2, houseWidth / 2, houseHeight / 2).seal("sw").door("e").addItems(["Key"]); // bottom-left
-		//	Crafty.e("Room").create(houseWidth / 2, houseHeight / 2, houseWidth / 2, houseHeight / 2).seal("se").door("n"); // bottom-right					
+			Crafty.e("Room").create(0, 0, houseWidth / 2, houseHeight / 2).seal("nw").door("s").lock("s"); // top-left 
+			Crafty.e("Room").create(houseWidth / 2, 0, houseWidth / 2, houseHeight / 2).seal("ne").door("w"); // top-right
+			Crafty.e("Room").create(0, houseHeight / 2, houseWidth / 2, houseHeight / 2).seal("sw").door("e").addItems(["Key"]); // bottom-left
+			Crafty.e("Room").create(houseWidth / 2, houseHeight / 2, houseWidth / 2, houseHeight / 2).seal("se").door("n"); // bottom-right					
+
 			Crafty.e("Darkness");
+          
 			var e = Crafty.e("Player");
 			// Follow player around with camera
-			//Crafty.viewport.follow(e);
-			//Crafty.viewport.centerOn(e);
-			//alert("Flag")
+			Crafty.viewport.follow(e);
+			Crafty.viewport.centerOn(e);
         }
     }
  	</script>
