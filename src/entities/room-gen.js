@@ -4,13 +4,18 @@ Crafty.c("proto_room",{
 	x:0,						//Virtual X-Y position for spacial cohesion of generated rooms. 
 	y:0,
 	//Connecting IDs
-	N:0,
-	S:0,
-	E:0,
-	W:0,
+	N:undefined,
+	S:undefined,
+	E:undefined,
+	W:undefined,
+	
+	OpenString:'',
+	DoorString:'',
+    WallString:'',
 	//Room attributes
 	Type:0,						//Identification string for room type subclass
 	//Room generation attributes
+	Furniture:[],
 	Connection_type:[],			//Types of rooms this room node can parent. Type can be repeated to increase probability of spawning
 	Connection_max:0,			//How many connections this node can support
 	
@@ -18,6 +23,7 @@ Crafty.c("proto_room",{
 	},
 		
     at: function(x,y){			//Assign X-Y position of room, check area is free. Return conflicting room ID if fails.
+
     	for(var scan = 0;scan< map.locations.length;scan++){
     		if (map.locations[scan].x==x&&map.locations[scan].y==y){    			
     			return map.locations[scan].id;	//Location already in use. Return ID of conflicting room 
@@ -33,7 +39,6 @@ Crafty.c("proto_room",{
 	{
 		this.Connection_max-=1;
 		map.locations[Room_id].Connection_max-=1;
-		linkdraw=Crafty.e('Terrain').at(this.x*2-100,this.y*2+100)
 		switch(dir){
 		case "North": //Room is placed to the north of parent
 			this.S = Room_id
@@ -57,14 +62,36 @@ Crafty.c("proto_room",{
     connect_test: function(Room_id, dir)
     {
     	if(this.Connection_max == 0 || map.locations[Room_id].Connection_max == 0){return 0;}
-    	var okay=0;
-    	for(var typescan = 0; typescan<map.locations[Room_id].Connection_type.length;typescan++){
-    		if(map.locations[Room_id].Connection_type[typescan]==this.Type){okay = 1; continue;}
+    	
+    	
+    	if (map.locations[Room_id].Connection_type.indexOf(this.Type) >= 0){
+    		this.connect(Room_id,dir);
+    		return 1;
     	}
-    	if(!okay){return 0;}
-    	this.connect(Room_id,dir);
-    	return 1;
     },
+    
+    gen_strings: function(){
+    	if(this.N==undefined){this.WallString+='n';}
+    	else{
+    		if(this.Type == map.locations[this.N].Type){this.OpenString+='n';}
+    		else{this.DoorString+='n';}
+    	}
+    	if(this.S==undefined){this.WallString+='s';}
+    	else{
+    		if(this.Type == map.locations[this.S].Type){this.OpenString+='s';}
+    		else{this.DoorString+='s';}
+    	}
+    	if(this.E==undefined){this.WallString+='e';}
+    	else{
+    		if(this.Type == map.locations[this.E].Type){this.OpenString+='e';}
+    		else{this.DoorString+='e';}
+    	}
+    	if(this.W==undefined){this.WallString+='w';}
+    	else{
+    		if(this.Type == map.locations[this.W].Type){this.OpenString+='w';}
+    		else{this.DoorString+='w';}
+    	}
+    }
 });
 
 
@@ -76,6 +103,7 @@ Crafty.c("Enterance",{
 			Type:"Enterance",
 			Connection_max: 3,
 			Connection_type:['Dining','Living','Hallway','Hallway','Hallway','Study']
+			
 		})
 	}
 });
@@ -112,6 +140,7 @@ Crafty.c("Dining",{
 			Type:"Dining",
 			Connection_max: 2,
 			Connection_type:['Kitchen','Dining','Hallway','Hallway']
+
 		})
 	}
 });
@@ -160,6 +189,7 @@ Crafty.c("Bath_Large",{
 			Type:"Bath_Large",
 			Connection_max: 1,
 			Connection_type:["Bath_Large"]
+			
 		})
 	}
 });

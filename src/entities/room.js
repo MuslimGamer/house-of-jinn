@@ -35,6 +35,23 @@ Crafty.c("Room", {
         }
         return this;
     },
+    
+    // Destroy walls
+    open: function(directions) {
+        if (directions.indexOf("n") >= 0) {
+            this.top.open();
+        }
+        if (directions.indexOf("w") >= 0) {
+            this.left.open();
+        }
+        if (directions.indexOf("s") >= 0) {
+            this.bottom.open();
+        }
+        if (directions.indexOf("e") >= 0) {
+            this.right.open();
+        }
+        return this;
+    },
 
     // Creates doors in the given direction (nsew)
     door: function(directions) {
@@ -119,4 +136,13 @@ Crafty.c("Room", {
             }
         }
     }
+   //Call rooms to shift position, keeping player room in center of screen.
+   //Crafty view functions not yet working
+  /* position: function() {
+        this.floor.move(x, y);
+        this.top.move(x, y);
+        this.bottom.move(x, y + height - wallThickness);
+        this.left.move(x, y);
+        this.right.move(x + width - wallThickness, y);
+    }*/
 });
