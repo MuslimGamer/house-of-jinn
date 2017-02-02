@@ -1,76 +1,70 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<style>
-			body {
-				margin: 0px;
-			}
-		</style>
 
-		<script src="lib/crafty-0.7.1.min.js" type="text/javascript"></script>
-		<script src="src/prototype/prototype.js" type="text/javascript"></script>
-
-		<script src="src/entities/player.js" type="text/javascript"></script>
-		<script src="src/entities/wall.js" type="text/javascript"></script>
-		<script src="src/entities/room.js" type="text/javascript"></script>
-		<script src="src/entities/map.js" type="text/javascript"></script>
-			<script src="src/entities/room-gen.js" type="text/javascript"></script>
-		<script src="src/entities/items.js" type="text/javascript"></script>
-		<script src="src/entities/darkness.js" type="text/javascript"></script>
-    <!-- Core game -->
-	<script type="text/javascript">
- 	Game = {
-
-    	view: {
-					// full-screen
-        	width: window.innerWidth,
-        	height: window.innerHeight
-        },
-
-        start: function() {
-					// Game world is whatever fits on-screen
-        	Crafty.init(Game.view.width, Game.view.height);
-			Crafty.background('#008800');
-			//alert("Starting")
-			map.generate();
-			console.log("Map generated, "+map.locations.length+" Rooms generated");
-					
-			//  House: four walls and random internal walls
-			// Total exterior size (including walls)
-			//var houseWidth = parseInt(config("mansion_width"));
-			//var houseHeight = parseInt(config("mansion_height"));
-			var roomWidth = Game.view.width/3
-			var roomHeight = Game.view.height/3
-			
-			//roomdraw = ID of room to draw
-			for(var roomdraw = 0; roomdraw < map.locations.length;roomdraw++){
-			
-				//Generate Room object using strings generated above from checking neighbouring locations
-				//Defining room dimenions as 1/3 of screen dimensions. Plan to shift room locations on transition to keep player room centered on screen
-				newroom=Crafty.e("Room").create(map.locations[roomdraw].x*roomWidth, map.locations[roomdraw].y*roomHeight,roomWidth,roomHeight)
-				if(map.locations[roomdraw].WallString!=''){newroom.seal(map.locations[roomdraw].WallString);}
-				if(map.locations[roomdraw].DoorString!=''){newroom.door(map.locations[roomdraw].DoorString);}
-				if(map.locations[roomdraw].OpenString!=''){newroom.open(map.locations[roomdraw].OpenString);}
-				//.lock(Lockstring);
-				
-			}
-		//	Crafty.e("Room").create(0, 0, houseWidth / 2, houseHeight / 2).seal("nw").door("s").lock("s"); // top-left 
-		//	Crafty.e("Room").create(houseWidth / 2, 0, houseWidth / 2, houseHeight / 2).seal("ne").door("w"); // top-right
-		//	Crafty.e("Room").create(0, houseHeight / 2, houseWidth / 2, houseHeight / 2).seal("sw").door("e").addItems(["Key"]); // bottom-left
-		//	Crafty.e("Room").create(houseWidth / 2, houseHeight / 2, houseWidth / 2, houseHeight / 2).seal("se").door("n"); // bottom-right					
-			Crafty.e("Darkness");
-			var e = Crafty.e("Player");
-			// Follow player around with camera
-			//Crafty.viewport.follow(e);
-			//Crafty.viewport.centerOn(e);
-			//alert("Flag")
+<head>
+    <style>
+        body {
+            margin: 0px;
         }
-    }
- 	</script>
-	<script>
-	window.addEventListener('load', Game.start);
-	</script>
-	</head>
-	<body>
-	</body>
+    </style>
+
+    <script src="lib/crafty-0.7.1.min.js" type="text/javascript"></script>
+    <script src="src/prototype/prototype.js" type="text/javascript"></script>
+
+    <script src="src/entities/player.js" type="text/javascript"></script>
+    <script src="src/entities/wall.js" type="text/javascript"></script>
+    <script src="src/entities/room.js" type="text/javascript"></script>
+    <script src="src/entities/map.js" type="text/javascript"></script>
+    <script src="src/entities/room-gen.js" type="text/javascript"></script>
+    <script src="src/entities/items.js" type="text/javascript"></script>
+    <script src="src/entities/darkness.js" type="text/javascript"></script>
+    <!-- Core game -->
+    <script type="text/javascript">
+        Game = {
+
+            view: {
+                // full-screen
+                width: window.innerWidth,
+                height: window.innerHeight
+            },
+
+            start: function() {
+                // Game world is whatever fits on-screen
+                Crafty.init(Game.view.width, Game.view.height);
+                Crafty.background('#008800');
+                map.generate();
+                console.log("Map generated, " + map.locations.length + " Rooms generated");
+
+                var roomWidth = parseInt(config("roomWidth"));
+                var roomHeight = parseInt(config("roomHeight"));
+
+                //roomdraw = ID of room to draw
+                for (var roomdraw = 0; roomdraw < map.locations.length; roomdraw++) {
+
+                    //Generate Room object using strings generated above from checking neighbouring locations
+                    //Defining room dimenions as 1/3 of screen dimensions. Plan to shift room locations on transition to keep player room centered on screen
+                    newroom = Crafty.e("Room").create(map.locations[roomdraw].x * roomWidth, map.locations[roomdraw].y * roomHeight, roomWidth, roomHeight)
+                    if (map.locations[roomdraw].WallString != '') {
+                        newroom.seal(map.locations[roomdraw].WallString);
+                    }
+                    if (map.locations[roomdraw].DoorString != '') {
+                        newroom.door(map.locations[roomdraw].DoorString);
+                    }
+                    if (map.locations[roomdraw].OpenString != '') {
+                        newroom.open(map.locations[roomdraw].OpenString);
+                    }
+                }
+                Crafty.e("Darkness");
+                var e = Crafty.e("Player");
+            }
+        }
+    </script>
+    <script>
+        window.addEventListener('load', Game.start);
+    </script>
+</head>
+
+<body>
+</body>
+
 </html>

@@ -9,7 +9,7 @@ Crafty.c("Room", {
         this.items = [];
         this.isLit = false;
 
-        var wallThickness = parseInt(config("wall_thickness"));
+        var wallThickness = parseInt(config("wallThickness"));
         this.floor = Crafty.e("Actor").size(width, height).move(x, y).color("grey");
         this.top = Crafty.e("WallWithDoorway").create(x, y, width, wallThickness);
         this.bottom = Crafty.e("WallWithDoorway").create(x, y + height - wallThickness, width, wallThickness);
@@ -97,7 +97,7 @@ Crafty.c("Room", {
 
     // Add items to this room, randomly-positioned
     addItems: function(list) {
-        var wallThickness = parseInt(config("wall_thickness"));
+        var wallThickness = parseInt(config("wallThickness"));
         for (var i = 0; i < list.length; i++) {
             var item = list[i];
             var itemX = randomBetween(this.x + wallThickness, this.x + this.width - wallThickness);
