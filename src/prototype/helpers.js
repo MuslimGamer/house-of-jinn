@@ -14,7 +14,7 @@ window.onload = function() {
   }
 }
 
-// Returns a piece of config from the URL (if available), then external.json.
+// Returns a piece of config from the URL (if available), then config.json.
 function config(name) {
   return  queryParam(name) || extern(name, true);
 }
@@ -27,7 +27,7 @@ function randomBetween(a, b) {
 }
 
 // DO NOT USE. Use config(key) instead.
-// Gets a variable from external.json.
+// Gets a variable from config.json.
 function extern(key, hideWarning) {
   if (window.externs[key] === undefined && !hideWarning) {
     console.error("Missing extern: " + key);

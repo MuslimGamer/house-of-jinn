@@ -26,9 +26,9 @@ function loadScript(url, callback)
 
 // Load externs. If the file is missing, use an empty hash.
 externs = { };
-// Define a file called external.json with contents:
+// Define a file called config.json with contents:
 // externs = { ... json ... }
-loadScript('external.json');
+loadScript('config.json');
 
 loadScript('src/prototype/helpers.js');
 loadScript('src/prototype/crafty-extensions.js');
