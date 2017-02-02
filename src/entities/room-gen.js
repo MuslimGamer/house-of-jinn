@@ -9,23 +9,23 @@ Crafty.c("proto_room", {
     E: undefined,
     W: undefined,
 
-    OpenString: '',
-    DoorString: '',
-    WallString: '',
+    openDirections: '',
+    doorDirections: '',
+    wallDirections: '',
     //Room attributes
     Type: 0, //Identification string for room type subclass
     //Room generation attributes
     Furniture: [],
-    Connection_type: [], //Types of rooms this room node can parent. Type can be repeated to increase probability of spawning
-    Connection_max: 0, //How many connections this node can support
+    connectionType: [], //Types of rooms this room node can parent. Type can be repeated to increase probability of spawning
+    numRoomsToConnect: 0, //How many connections this node can support
 
     init: function() {},
 
     at: function(x, y) { //Assign X-Y position of room, check area is free. Return conflicting room ID if fails.
 
-        for (var scan = 0; scan < map.locations.length; scan++) {
-            if (map.locations[scan].x == x && map.locations[scan].y == y) {
-                return map.locations[scan].id; //Location already in use. Return ID of conflicting room 
+        for (var roomIndex = 0; roomIndex < map.locations.length; roomIndex++) {
+            if (map.locations[roomIndex].x == x && map.locations[roomIndex].y == y) {
+                return map.locations[roomIndex].id; //Location already in use. Return ID of conflicting room 
             }
         }
         //Location is free. Officially assign X-Y position to this room and return success.
@@ -34,90 +34,89 @@ Crafty.c("proto_room", {
         return this.id;
     },
 
-    connect: function(Room_id, dir) {
-        this.Connection_max -= 1;
-        map.locations[Room_id].Connection_max -= 1;
+    connect: function(roomId, dir) {
+        this.numRoomsToConnect -= 1;
+        map.locations[roomId].numRoomsToConnect -= 1;
         switch (dir) {
             case "North": //Room is placed to the north of parent
-                this.S = Room_id
-                map.locations[Room_id].N = this.id
+                this.S = roomId
+                map.locations[roomId].N = this.id
                 break;
             case "South": //Room is placed to the south of the parent
-                this.N = Room_id
-                map.locations[Room_id].S = this.id
+                this.N = roomId
+                map.locations[roomId].S = this.id
                 break;
             case "East":
-                this.W = Room_id
-                map.locations[Room_id].E = this.id
+                this.W = roomId
+                map.locations[roomId].E = this.id
                 break;
             case "West":
-                this.E = Room_id
-                map.locations[Room_id].W = this.id
+                this.E = roomId
+                map.locations[roomId].W = this.id
         }
     },
 
     //Test if proposed connection is permitted (Rooms allowed more doors, room types compatible for linking).
-    connect_test: function(Room_id, dir) {
-        if (this.Connection_max == 0 || map.locations[Room_id].Connection_max == 0) {
+    canConnect: function(roomId, dir) {
+        if (this.numRoomsToConnect == 0 || map.locations[roomId].numRoomsToConnect == 0) {
             return 0;
         }
 
-
-        if (map.locations[Room_id].Connection_type.indexOf(this.Type) >= 0) {
-            this.connect(Room_id, dir);
+        if (map.locations[roomId].connectionType.indexOf(this.Type) >= 0) {
+            this.connect(roomId, dir);
             return 1;
         }
     },
 
     gen_strings: function() {
         if (this.N == undefined) {
-            this.WallString += 'n';
+            this.wallDirections += 'n';
         } else {
             if (this.Type == map.locations[this.N].Type) {
-                this.OpenString += 'n';
+                this.openDirections += 'n';
             } else {
-                this.DoorString += 'n';
+                this.doorDirections += 'n';
             }
         }
         if (this.S == undefined) {
-            this.WallString += 's';
+            this.wallDirections += 's';
         } else {
             if (this.Type == map.locations[this.S].Type) {
-                this.OpenString += 's';
+                this.openDirections += 's';
             } else {
-                this.DoorString += 's';
+                this.doorDirections += 's';
             }
         }
         if (this.E == undefined) {
-            this.WallString += 'e';
+            this.wallDirections += 'e';
         } else {
             if (this.Type == map.locations[this.E].Type) {
-                this.OpenString += 'e';
+                this.openDirections += 'e';
             } else {
-                this.DoorString += 'e';
+                this.doorDirections += 'e';
             }
         }
         if (this.W == undefined) {
-            this.WallString += 'w';
+            this.wallDirections += 'w';
         } else {
             if (this.Type == map.locations[this.W].Type) {
-                this.OpenString += 'w';
+                this.openDirections += 'w';
             } else {
-                this.DoorString += 'w';
+                this.doorDirections += 'w';
             }
         }
     }
 });
 
 
-Crafty.c("Enterance", {
+Crafty.c("Entrance", {
     init: function() {
         this.requires('proto_room')
             .attr({
                 id: map.locations.length,
-                Type: "Enterance",
-                Connection_max: 3,
-                Connection_type: ['Dining', 'Living', 'Hallway', 'Hallway', 'Hallway', 'Study']
+                Type: "Entrance",
+                numRoomsToConnect: 3,
+                connectionType: ['Dining', 'Living', 'Hallway', 'Hallway', 'Hallway', 'Study']
 
             })
     }
@@ -129,8 +128,8 @@ Crafty.c("Hallway", {
             .attr({
                 id: map.locations.length,
                 Type: "Hallway",
-                Connection_max: 4,
-                Connection_type: ['Hallway', 'Hallway', 'Dining', 'Kitchen', 'Living', 'Bed_Large', 'Bed_Small', 'Bath_Large', 'Study']
+                numRoomsToConnect: 4,
+                connectionType: ['Hallway', 'Hallway', 'Dining', 'Kitchen', 'Living', 'Bed_Large', 'Bed_Small', 'Bath_Large', 'Study']
             })
     }
 });
@@ -141,8 +140,8 @@ Crafty.c("Living", {
             .attr({
                 id: map.locations.length,
                 Type: "Living",
-                Connection_max: 3,
-                Connection_type: ['Dining', 'Living', 'Hallway', 'Hallway']
+                numRoomsToConnect: 3,
+                connectionType: ['Dining', 'Living', 'Hallway', 'Hallway']
             })
     }
 });
@@ -153,8 +152,8 @@ Crafty.c("Dining", {
             .attr({
                 id: map.locations.length,
                 Type: "Dining",
-                Connection_max: 2,
-                Connection_type: ['Kitchen', 'Dining', 'Hallway', 'Hallway']
+                numRoomsToConnect: 2,
+                connectionType: ['Kitchen', 'Dining', 'Hallway', 'Hallway']
 
             })
     }
@@ -166,8 +165,8 @@ Crafty.c("Kitchen", {
             .attr({
                 id: map.locations.length,
                 Type: "Kitchen",
-                Connection_max: 1,
-                Connection_type: ["Kitchen"]
+                numRoomsToConnect: 1,
+                connectionType: ["Kitchen"]
             })
     }
 });
@@ -178,8 +177,8 @@ Crafty.c("Study", {
             .attr({
                 id: map.locations.length,
                 Type: "Study",
-                Connection_max: 1,
-                Connection_type: ['Study', 'Hallway']
+                numRoomsToConnect: 1,
+                connectionType: ['Study', 'Hallway']
             })
     }
 });
@@ -190,8 +189,8 @@ Crafty.c("Bed_Large", {
             .attr({
                 id: map.locations.length,
                 Type: "Bed_Large",
-                Connection_max: 2,
-                Connection_type: ['Bed_Large', 'Bath_Large']
+                numRoomsToConnect: 2,
+                connectionType: ['Bed_Large', 'Bath_Large']
             })
     }
 });
@@ -202,8 +201,8 @@ Crafty.c("Bath_Large", {
             .attr({
                 id: map.locations.length,
                 Type: "Bath_Large",
-                Connection_max: 1,
-                Connection_type: ["Bath_Large"]
+                numRoomsToConnect: 1,
+                connectionType: ["Bath_Large"]
 
             })
     }
@@ -215,8 +214,8 @@ Crafty.c("Bed_Small", {
             .attr({
                 id: map.locations.length,
                 Type: "Bed_Small",
-                Connection_max: 1,
-                Connection_type: []
+                numRoomsToConnect: 1,
+                connectionType: []
             })
     }
 });
