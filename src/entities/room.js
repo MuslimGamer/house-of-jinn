@@ -1,4 +1,3 @@
-
 Crafty.c("Room", {
     // Create a room precisely contained within this size
     create: function(x, y, width, height) {
@@ -135,6 +134,12 @@ Crafty.c("Room", {
                 this.items[i].z = 2;
             }
         }
+    },
+
+    setupWalls: function(openDirections, wallDirections, doorDirections) {
+        this.open(openDirections);
+        this.seal(wallDirections);
+        this.door(doorDirections);
     }
    //Call rooms to shift position, keeping player room in center of screen.
    //Crafty view functions not yet working

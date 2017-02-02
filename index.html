@@ -34,9 +34,9 @@
 
                     for (var roomIndex = 0; roomIndex < map.locations.length; roomIndex++) {
                         var currentRoom = map.locations[roomIndex];
-                        //Generate Room object using strings generated above from checking neighbouring locations
-                        //Defining room dimenions from config.json.
-                        newRoom = Crafty.e("Room").create(currentRoom.x * roomWidth, currentRoom.y * roomHeight, roomWidth, roomHeight);
+                        newRoom = Crafty.e("Room")
+                            .create(currentRoom.x * roomWidth, currentRoom.y * roomHeight, roomWidth, roomHeight)
+                            .setupWalls(currentRoom.openDirections, currentRoom.wallDirections, currentRoom.doorDirections);
                     }
                     Crafty.e("Darkness");
                     var e = Crafty.e("Player");

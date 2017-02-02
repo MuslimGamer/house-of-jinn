@@ -1,4 +1,4 @@
-Crafty.c("proto_room", {
+Crafty.c("RoomData", {
     //Room identifier
     id: 0, //Unique ID code, references index of locations array
     x: 0, //Virtual X-Y position for spacial cohesion of generated rooms. 
@@ -36,39 +36,42 @@ Crafty.c("proto_room", {
 
     connect: function(roomId, dir) {
         this.numRoomsToConnect -= 1;
-        map.locations[roomId].numRoomsToConnect -= 1;
+        var targetRoom = map.locations[roomId];
+        targetRoom.numRoomsToConnect -= 1;
         switch (dir) {
             case "North": //Room is placed to the north of parent
                 this.S = roomId
-                map.locations[roomId].N = this.id
+                targetRoom.N = this.id
                 break;
             case "South": //Room is placed to the south of the parent
                 this.N = roomId
-                map.locations[roomId].S = this.id
+                targetRoom.S = this.id
                 break;
             case "East":
                 this.W = roomId
-                map.locations[roomId].E = this.id
+                targetRoom.E = this.id
                 break;
             case "West":
                 this.E = roomId
-                map.locations[roomId].W = this.id
+                targetRoom.W = this.id
         }
     },
 
     //Test if proposed connection is permitted (Rooms allowed more doors, room types compatible for linking).
     canConnect: function(roomId, dir) {
-        if (this.numRoomsToConnect == 0 || map.locations[roomId].numRoomsToConnect == 0) {
-            return 0;
+        var targetRoom = map.locations[roomId];
+        // Do both rooms have a free connection?
+        if (this.numRoomsToConnect == 0 || targetRoom.numRoomsToConnect == 0) {
+            return false;
         }
 
-        if (map.locations[roomId].connectionType.indexOf(this.Type) >= 0) {
-            this.connect(roomId, dir);
-            return 1;
+        // Is the target room allowed to connect to this type of room?
+        if (targetRoom.connectionType.indexOf(this.Type) >= 0) {
+            return true;
         }
     },
 
-    gen_strings: function() {
+    setDirectionData: function() {
         if (this.N == undefined) {
             this.wallDirections += 'n';
         } else {
@@ -111,7 +114,7 @@ Crafty.c("proto_room", {
 
 Crafty.c("Entrance", {
     init: function() {
-        this.requires('proto_room')
+        this.requires('RoomData')
             .attr({
                 id: map.locations.length,
                 Type: "Entrance",
@@ -124,7 +127,7 @@ Crafty.c("Entrance", {
 
 Crafty.c("Hallway", {
     init: function() {
-        this.requires('proto_room')
+        this.requires('RoomData')
             .attr({
                 id: map.locations.length,
                 Type: "Hallway",
@@ -136,7 +139,7 @@ Crafty.c("Hallway", {
 
 Crafty.c("Living", {
     init: function() {
-        this.requires('proto_room')
+        this.requires('RoomData')
             .attr({
                 id: map.locations.length,
                 Type: "Living",
@@ -148,7 +151,7 @@ Crafty.c("Living", {
 
 Crafty.c("Dining", {
     init: function() {
-        this.requires('proto_room')
+        this.requires('RoomData')
             .attr({
                 id: map.locations.length,
                 Type: "Dining",
@@ -161,7 +164,7 @@ Crafty.c("Dining", {
 
 Crafty.c("Kitchen", {
     init: function() {
-        this.requires('proto_room')
+        this.requires('RoomData')
             .attr({
                 id: map.locations.length,
                 Type: "Kitchen",
@@ -173,7 +176,7 @@ Crafty.c("Kitchen", {
 
 Crafty.c("Study", {
     init: function() {
-        this.requires('proto_room')
+        this.requires('RoomData')
             .attr({
                 id: map.locations.length,
                 Type: "Study",
@@ -185,7 +188,7 @@ Crafty.c("Study", {
 
 Crafty.c("Bed_Large", {
     init: function() {
-        this.requires('proto_room')
+        this.requires('RoomData')
             .attr({
                 id: map.locations.length,
                 Type: "Bed_Large",
@@ -197,7 +200,7 @@ Crafty.c("Bed_Large", {
 
 Crafty.c("Bath_Large", {
     init: function() {
-        this.requires('proto_room')
+        this.requires('RoomData')
             .attr({
                 id: map.locations.length,
                 Type: "Bath_Large",
@@ -210,7 +213,7 @@ Crafty.c("Bath_Large", {
 
 Crafty.c("Bed_Small", {
     init: function() {
-        this.requires('proto_room')
+        this.requires('RoomData')
             .attr({
                 id: map.locations.length,
                 Type: "Bed_Small",

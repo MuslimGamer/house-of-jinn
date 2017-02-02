@@ -10,25 +10,27 @@ map = {
         this.locations.push(newRoom);
 
         //Move though Locations list, generating/Attaching rooms until EoList or 100 rooms processed.
-        for (var gen = 0; gen < this.locations.length && gen < 50; gen++) {
+        for (var roomIndex = 0; roomIndex < this.locations.length && roomIndex < 50; roomIndex++) {
             var attempts = 0;
-            while (this.locations[gen].numRoomsToConnect && attempts < 5) {
+            var currentRoom = this.locations[roomIndex];
+
+            while (currentRoom.numRoomsToConnect > 0 && attempts < 5) {
                 //Attempt to select a direction not already linked
                 var free = 1;
                 while (free != undefined) {
-                    var dirselect = Math.floor(Math.random() * 4);
-                    switch (dirselect) {
+                    var direction = Math.floor(Math.random() * 4);
+                    switch (direction) {
                         case 0:
-                            free = this.locations[gen].N
+                            free = currentRoom.N
                             break;
                         case 1:
-                            free = this.locations[gen].S
+                            free = currentRoom.S
                             break;
                         case 2:
-                            free = this.locations[gen].E
+                            free = currentRoom.E
                             break;
                         case 3:
-                            free = this.locations[gen].W
+                            free = currentRoom.W
                             break;
                     }
                 }
@@ -36,33 +38,33 @@ map = {
                 //Good direction selected. Start generating new room
                 //ID = array index
                 var newRoomId = this.locations.length;
-                //Select room type from potential child-rooms array of room object
-                var roomTypeSelect = Math.floor(Math.random() * this.locations[gen].connectionType.length);
-                var roomType = this.locations[gen].connectionType[Math.round(Math.random() * roomTypeSelect)];
+                //Select room type from potential connectable array of room object
+                var roomTypeSelect = Math.floor(Math.random() * currentRoom.connectionType.length);
+                var roomType = currentRoom.connectionType[Math.round(Math.random() * roomTypeSelect)];
 
                 //Setup parameters for room placement functions
                 var dir = 0;
                 var x = 0;
                 var y = 0;
-                switch (dirselect) {
+                switch (direction) {
                     case 0:
-                        x = this.locations[gen].x;
-                        y = this.locations[gen].y - 1;
+                        x = currentRoom.x;
+                        y = currentRoom.y - 1;
                         dir = "North";
                         break;
                     case 1:
-                        x = this.locations[gen].x;
-                        y = this.locations[gen].y + 1;
+                        x = currentRoom.x;
+                        y = currentRoom.y + 1;
                         dir = "South";
                         break;
                     case 2:
-                        x = this.locations[gen].x + 1;
-                        y = this.locations[gen].y;
+                        x = currentRoom.x + 1;
+                        y = currentRoom.y;
                         dir = "East";
                         break;
                     case 3:
-                        x = this.locations[gen].x - 1;
-                        y = this.locations[gen].y;
+                        x = currentRoom.x - 1;
+                        y = currentRoom.y;
                         dir = "West";
                         break;
                 }
@@ -90,10 +92,13 @@ map = {
                     newRoomId = doesRoomExist; //Use ID of already placed room, attempt to make connection if possible.
                 }
                 //Create connection with neighbouring room (New or old).
-                this.locations[newRoomId].canConnect(gen, dir); //Test if rooms compadible for connection. Form connection if pass.
+                if (this.locations[newRoomId].canConnect(roomIndex, dir) == true)
+                {
+                    this.locations[newRoomId].connect(roomIndex, dir);
+                }
             }
             //Set connection strings	
-            this.locations[gen].gen_strings();
+            currentRoom.setDirectionData();
         }
     }
 }
