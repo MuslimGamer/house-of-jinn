@@ -40,11 +40,15 @@ Crafty.c('Player', {
                         self.currentRoom = room;
                         self.currentRoom.light();
                         foundRoom = true;
-                    } else {
-                        room.darken();
                     }
                 }
             });
+
+            Crafty.forEach("Room", function(room) {
+                if (room != self.currentRoom) {
+                    room.darken();
+                }
+            })
         });
 
         // Pretend we moved: trigger lighting up the current room
