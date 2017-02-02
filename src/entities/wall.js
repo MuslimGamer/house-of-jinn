@@ -60,6 +60,11 @@ Crafty.c("WallWithDoorway", {
         }
         return this;
     },
+    
+    open: function(){
+    	this.w1.destroy();
+    	this.w2.destroy();
+    },
 
     door: function() {
         this.filler = Crafty.e("Door").move(this.doorwayX, this.doorwayY);
