@@ -74,7 +74,7 @@ map = {
 
                 //Prevent rooms being placed north of Entrance.
                 //Entrance should be placed on edge of building, this prevents rooms wrapping around all sides.
-                if (y < 0) {
+                if (x < 0 || y < 0) {
                     attempts += 1;
                     continue;
                 }

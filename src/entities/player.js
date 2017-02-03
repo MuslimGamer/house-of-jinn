@@ -64,7 +64,6 @@ Crafty.c('Player', {
                     currentRoom.lightIfVisible("s");
                     currentRoom.lightIfVisible("w");
                 }
-                console.log("Darken (" + this.oldRoomX + ", " + this.oldRoomY + ") and lighten (" + currentX + ", " + currentY + ")");                
             }
 
             this.oldX = this.x;
