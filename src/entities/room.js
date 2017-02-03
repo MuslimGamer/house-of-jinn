@@ -103,6 +103,7 @@ Crafty.c("Room", {
             var itemY = randomBetween(this.y + wallThickness, this.y + this.height - wallThickness);
             this.items.push(Crafty.e(item).move(itemX, itemY));
         }
+        return this;
     },
 
     light: function() {
@@ -119,6 +120,7 @@ Crafty.c("Room", {
                 this.items[i].z = darknessZ + 2;
             }
         }
+        return this;
     },
 
     darken: function() {
@@ -134,12 +136,14 @@ Crafty.c("Room", {
                 this.items[i].z = 2;
             }
         }
+        return this;
     },
 
     setupWalls: function(openDirections, wallDirections, doorDirections) {
         this.open(openDirections);
         this.seal(wallDirections);
         this.door(doorDirections);
+        return this;
     }
    //Call rooms to shift position, keeping player room in center of screen.
    //Crafty view functions not yet working
@@ -149,5 +153,6 @@ Crafty.c("Room", {
         this.bottom.move(x, y + height - wallThickness);
         this.left.move(x, y);
         this.right.move(x + width - wallThickness, y);
+        return this;
     }*/
 });

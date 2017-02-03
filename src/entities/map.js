@@ -3,6 +3,9 @@ map = {
     // eg. two adjacent locations without a dividing wall make up
     // a tall room. Three connected length-wise make a hallway.
     locations: [],
+    // (x, y) => room
+    roomPositions: {},
+
     generate: function() {
 
         var newRoom = Crafty.e("Entrance");
@@ -100,5 +103,17 @@ map = {
             //Set connection strings	
             currentRoom.setDirectionData();
         }
+    },
+
+    setRoomAt: function(x, y, room)
+    {
+        var key = x + ", " + y;
+        this.roomPositions[key] = room;
+    },
+
+    getRoomAt: function(x, y)
+    {
+        var key = x + ", " + y;
+        return this.roomPositions[key];
     }
 }

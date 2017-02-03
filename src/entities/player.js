@@ -12,6 +12,10 @@ Crafty.c('Player', {
 
         this.z = 1000; // on top of floors
         this.currentRoom = Crafty.first("Room");
+        this.currentRoom.light();
+
+        this.oldX = this.x;
+        this.oldY = this.y;
         
         // Resolve so that we stop moving
         this.collideWith("Door", function(data) {
@@ -27,29 +31,38 @@ Crafty.c('Player', {
             }
         });
 
-        this.bind("Moved", function(oldPosition) {  
+        this.bind("Moved", function(oldPosition) {
         	Crafty.viewport.centerOn(this,100)
             // Use AABB to figure out what room the player is in. Light the first one found.
             // When the player straddles two rooms, we pick the first room that fully encloses
             // the player. There's no such room. So currentRoom stays at the old room. Nicely done.
-            var foundRoom = false;
-            Crafty.forEach("Room", function(room) {
-                if (!foundRoom) {
-                    if (self.x >= room.x && self.y >= room.y && 
-                    self.x + self.width() <= room.x + room.width &&
-                    self.y + self.height() <= room.y + room.height) {
-                        self.currentRoom = room;
-                        self.currentRoom.light();
-                        foundRoom = true;
-                    }
-                }
-            });
+            var roomWidth = parseInt(config("roomWidth"));
+            var roomHeight = parseInt(config("roomHeight"));
 
-            Crafty.forEach("Room", function(room) {
-                if (room != self.currentRoom) {
-                    room.darken();
+            var oldRoomX = Math.floor(this.oldX / roomWidth);
+            var oldRoomY = Math.floor(this.oldY / roomHeight);            
+            var oldRoom = map.getRoomAt(oldRoomX, oldRoomY);
+
+            var currentX = Math.floor(this.x / roomWidth);
+            var currentY = Math.floor(this.y / roomHeight);
+            var currentRoom = map.getRoomAt(currentX, currentY);
+
+            if (oldRoom != currentRoom)
+            {
+                if (typeof(oldRoom) != "undefined")
+                {
+                    oldRoom.darken();
                 }
-            })
+
+                if (typeof(currentRoom) != "undefined")
+                {
+                    currentRoom.light();
+                }
+                console.log("Darken (" + this.oldRoomX + ", " + this.oldRoomY + ") and lighten (" + currentX + ", " + currentY + ")");                
+            }
+
+            this.oldX = this.x;
+            this.oldY = this.y;
         });
 
         // Pretend we moved: trigger lighting up the current room

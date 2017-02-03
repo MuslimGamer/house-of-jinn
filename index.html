@@ -37,6 +37,8 @@
                         newRoom = Crafty.e("Room")
                             .create(currentRoom.x * roomWidth, currentRoom.y * roomHeight, roomWidth, roomHeight)
                             .setupWalls(currentRoom.openDirections, currentRoom.wallDirections, currentRoom.doorDirections);
+                            
+                        map.setRoomAt(currentRoom.x, currentRoom.y, newRoom);
                     }
                     Crafty.e("Darkness");
                     var e = Crafty.e("Player");
