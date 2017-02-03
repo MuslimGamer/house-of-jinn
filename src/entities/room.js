@@ -7,6 +7,7 @@ Crafty.c("Room", {
         this.height = height;
         this.items = [];
         this.isLit = false;
+        this.data = null; // RoomData instance
 
         var wallThickness = parseInt(config("wallThickness"));
         this.floor = Crafty.e("Actor").size(width, height).move(x, y).color("grey");
@@ -122,6 +123,52 @@ Crafty.c("Room", {
         }
         return this;
     },
+
+    lightIfVisible: function(direction)
+    {
+        var roomIndex = null;
+
+        if (direction == "n") {
+            roomIndex = this.data.N;
+        } else if (direction == "e") {
+            roomIndex = this.data.E;
+        } else if (direction == "s") {
+            roomIndex = this.data.S;
+        } else if (direction == "w") {
+            roomIndex = this.data.W;
+        } else {
+            throw("Invalid direction: " + direction);
+        }
+
+        if (roomIndex != null && this.data.openDirections.indexOf(direction) > -1)
+        {
+            var room = map.locations[roomIndex]
+            map.getRoomAt(room.x, room.y).light();
+        }
+    },    
+
+    darkenIfVisible: function(direction)
+    {
+        var roomIndex = null;
+
+        if (direction == "n") {
+            roomIndex = this.data.N;
+        } else if (direction == "e") {
+            roomIndex = this.data.E;
+        } else if (direction == "s") {
+            roomIndex = this.data.S;
+        } else if (direction == "w") {
+            roomIndex = this.data.W;
+        } else {
+            throw("Invalid direction: " + direction);
+        }
+
+        if (roomIndex != null && this.data.openDirections.indexOf(direction) > -1)
+        {
+            var room = map.locations[roomIndex]
+            map.getRoomAt(room.x, room.y).darken();
+        }
+    },  
 
     darken: function() {
         if (this.isLit) {

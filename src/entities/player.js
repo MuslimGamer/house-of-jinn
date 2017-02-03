@@ -33,12 +33,10 @@ Crafty.c('Player', {
 
         this.bind("Moved", function(oldPosition) {
         	Crafty.viewport.centerOn(this,100)
-            // Use AABB to figure out what room the player is in. Light the first one found.
-            // When the player straddles two rooms, we pick the first room that fully encloses
-            // the player. There's no such room. So currentRoom stays at the old room. Nicely done.
             var roomWidth = parseInt(config("roomWidth"));
             var roomHeight = parseInt(config("roomHeight"));
 
+            // Coordinates in room indicies, not pixels. eg. (1, 0) is the first room on the right.
             var oldRoomX = Math.floor(this.oldX / roomWidth);
             var oldRoomY = Math.floor(this.oldY / roomHeight);            
             var oldRoom = map.getRoomAt(oldRoomX, oldRoomY);
@@ -52,11 +50,19 @@ Crafty.c('Player', {
                 if (typeof(oldRoom) != "undefined")
                 {
                     oldRoom.darken();
+                    oldRoom.darkenIfVisible("n");
+                    oldRoom.darkenIfVisible("e");
+                    oldRoom.darkenIfVisible("s");
+                    oldRoom.darkenIfVisible("w");
                 }
 
                 if (typeof(currentRoom) != "undefined")
                 {
                     currentRoom.light();
+                    currentRoom.lightIfVisible("n");
+                    currentRoom.lightIfVisible("e");
+                    currentRoom.lightIfVisible("s");
+                    currentRoom.lightIfVisible("w");
                 }
                 console.log("Darken (" + this.oldRoomX + ", " + this.oldRoomY + ") and lighten (" + currentX + ", " + currentY + ")");                
             }
