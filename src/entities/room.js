@@ -16,6 +16,7 @@ Crafty.c("Room", {
         this.left = Crafty.e("WallWithDoorway").create(x, y, wallThickness, height);
         this.right = Crafty.e("WallWithDoorway").create(x + width - wallThickness, y, wallThickness, height);
         
+        this.darkness = Crafty.e("Darkness").move(this.x, this.y).size(this.width, this.height);
         return this;
     },
 
@@ -110,16 +111,7 @@ Crafty.c("Room", {
     light: function() {
         if (!this.isLit) {
             this.isLit = true;
-            var darknessZ = Crafty.single("Darkness").z;
-
-            this.floor.z = darknessZ + 1;
-            this.top.z(darknessZ + 2);
-            this.bottom.z(darknessZ + 2);
-            this.left.z(darknessZ + 2);
-            this.right.z(darknessZ + 2);
-            for (var i = 0; i < this.items.length; i++) {
-                this.items[i].z = darknessZ + 2;
-            }
+            this.darkness.alpha = 0;
         }
         return this;
     },
@@ -173,15 +165,9 @@ Crafty.c("Room", {
     darken: function() {
         if (this.isLit) {
             this.isLit = false;
-
-            this.floor.z = 0;
-            this.top.z(1);
-            this.bottom.z(1);
-            this.left.z(1);
-            this.right.z(1);
-            for (var i = 0; i < this.items.length; i++) {
-                this.items[i].z = 2;
-            }
+            // Fog-of-war style: once lit, a room is always "remembered" by being
+            // partially darkened only. Does this spoil it when jinns are inside?
+            this.darkness.alpha = 0.9;
         }
         return this;
     },
