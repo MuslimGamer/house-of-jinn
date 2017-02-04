@@ -8,6 +8,7 @@ Crafty.c("RoomData", {
     S: undefined,
     E: undefined,
     W: undefined,
+    entity: null, // Crafty.e("Room") for this room data
 
     openDirections: '',
     doorDirections: '',

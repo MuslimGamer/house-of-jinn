@@ -20,10 +20,17 @@ Game = {
                 .create(currentRoom.x * roomWidth, currentRoom.y * roomHeight, roomWidth, roomHeight)
                 .setupWalls(currentRoom.openDirections, currentRoom.wallDirections, currentRoom.doorDirections);
             newRoom.data = currentRoom;
+            currentRoom.entity = newRoom;
             map.setRoomAt(currentRoom.x, currentRoom.y, newRoom);
         }
         var e = Crafty.e("Player");
+
+        //for (var i = 0; i < 4; i++)
+        //{
+            Crafty.e("Jinn");
+        //}
     }
 }
 
 window.addEventListener('load', Game.start);
+
