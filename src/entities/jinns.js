@@ -3,6 +3,14 @@ Crafty.c('Jinn', {
         var self = this;
         this.requires("Actor").size(64, 64).color("#aaffaa");
         this.pickNewTargetRoom();
+        this.collide("Player", function() {
+            var player = Crafty("Player");
+            player.die();
+            var t = Crafty.e("Text2").text("Game Over!").fontSize(72);
+            t.textColor("white");
+            t.move(player.x, player.y);
+            Crafty.viewport.centerOn(t, 1000);
+        });
     },
 
     pickNewTargetRoom: function() {
