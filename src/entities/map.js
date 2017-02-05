@@ -1,12 +1,12 @@
 map = {
-    // Individual segments that may be a room or part of a room
-    // eg. two adjacent locations without a dividing wall make up
-    // a tall room. Three connected length-wise make a hallway.
-    locations: [],
-    // (x, y) => room
-    roomPositions: {},
-
     generate: function() {
+        // Individual segments that may be a room or part of a room
+        // eg. two adjacent locations without a dividing wall make up
+        // a tall room. Three connected length-wise make a hallway.    
+        this.locations = [];
+
+        // (x, y) => room
+        this.roomPositions = {};
 
         var newRoom = Crafty.e("Entrance");
         newRoom.at(0, 0);

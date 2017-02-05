@@ -10,6 +10,28 @@ Crafty.c('Jinn', {
             t.textColor("white");
             t.move(player.x, player.y);
             Crafty.viewport.centerOn(t, 1000);
+
+            var t2 = Crafty.e("Text2").text("Click here to restart").fontSize(48).move(t.x, t.y + 72)
+                .click(function() {
+                    // Hide a big where calling Game.start immediately causes Game Over to stay on-screen,
+                    // and the game doesn't actually restart.  Not sure why this happens; keeping a single
+                    // entity around seems to resolve the issue.
+                    var e = Crafty.e("Actor").size(0, 0);
+                    var eId = e[0];
+                    // Kill off EVERYTHING. Except e.
+                    t.die();
+                    t2.die();
+                    var everything = Crafty("*");
+                    for (var i = 0; i < everything.length; i++) {
+                        var entityId = everything[i];
+                        if (entityId != eId) {
+                            Crafty(entityId).destroy();
+                        }
+                    }
+                    Game.start();
+                    Crafty(e).destroy();
+                });
+            t2.textColor("white");
         });
     },
 
@@ -19,7 +41,6 @@ Crafty.c('Jinn', {
         this.targetRoom = map.locations[targetRoomIndex].entity;
         this.targetX = randomBetween(this.targetRoom.x + BORDER_BUFFER, this.targetRoom.x + this.targetRoom.width - (2 * BORDER_BUFFER));
         this.targetY = randomBetween(this.targetRoom.y + BORDER_BUFFER, this.targetRoom.y + this.targetRoom.height - (2 * BORDER_BUFFER));
-        console.log("Target: " + this.targetRoom.x + ", " + this.targetRoom.y);
         
         // move at a constant speed
         var velocity = parseInt(config("jinnVelocity"));
