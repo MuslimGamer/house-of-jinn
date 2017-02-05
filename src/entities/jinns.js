@@ -21,6 +21,14 @@ Crafty.c('Jinn', {
         }
         this.move(startX, startY);
         this.pickNewTargetRoom();
+		
+		this.bind("EnterFrame", function() {
+			var myRoom = map.findRoomWith(self);
+			var playerRoom = map.findRoomWith(player);
+			if (myRoom == playerRoom) {
+				console.log("CHARGE!!! " + myRoom + " vs. " + playerRoom);
+			}
+		});
     },
 
     pickNewTargetRoom: function() {

@@ -105,15 +105,22 @@ map = {
         }
     },
 
-    setRoomAt: function(x, y, room)
-    {
+    setRoomAt: function(x, y, room) {
         var key = x + ", " + y;
         this.roomPositions[key] = room;
     },
 
-    getRoomAt: function(x, y)
-    {
+    getRoomAt: function(x, y) {
         var key = x + ", " + y;
         return this.roomPositions[key];
-    }
+    },
+	
+	findRoomWith: function(e) {
+		// TODO: if not a regular rectangular grid, iterate through the rooms
+		// instead and find the first one which encloses the given entity's x/y
+		var x = Math.floor(e.x / parseInt(config("roomWidth")));
+		var y = Math.floor(e.y / parseInt(config("roomHeight")));
+		
+		return map.getRoomAt(x, y);
+	}
 }
