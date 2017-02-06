@@ -25,10 +25,7 @@ Game = {
         }
         var e = Crafty.e("Player");
 
-        //for (var i = 0; i < 4; i++)
-        //{
-            Crafty.e("Jinn");
-        //}
+        Crafty.e("WandererJinn");
     }
 }
 
