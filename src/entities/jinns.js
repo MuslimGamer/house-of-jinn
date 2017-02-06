@@ -1,11 +1,10 @@
 /////////
 // Specific types of jinns
 /////////
-
 Crafty.c("WandererJinn", {
     init: function() {
         var self = this;
-        this.requires("Jinn, ChargePlayerOnSight");
+        this.requires("Jinn, ChargePlayerOnSight").size(64, 64).color("#aaffaa");
         this.pickNewTargetRoom();        
     },
 
@@ -31,13 +30,20 @@ Crafty.c("WandererJinn", {
     },
 })
 
+Crafty.c("WalkerJinn", {
+    init: function() {
+        var self = this;
+        this.requires("Jinn, ChargePlayerOnSight").size(32, 32).color("#882222");
+    }
+});
+
 /////////
 // Base class with common behaviour, from which we build specific subclasses
 /////////
 Crafty.c('Jinn', {
     init: function() {
         var self = this;
-        this.requires("Actor").size(64, 64).color("#aaffaa");
+        this.requires("Actor, Tween");
         this.collide("Player", this.gameOver);
 
         // Start in a random room. Not near the edges.
