@@ -5,5 +5,6 @@ externs = {
     "jinnVelocity": 100, // pixels per second
     "jinnWaitTimeSeconds": 3,
 	"jinnHuntTweenTime": 1,
-    "jinnHuntPounceTweenTime": 0.25
+    "jinnHuntPounceTweenTime": 0.25,
+    "jinns": ["Wanderer"]
 }

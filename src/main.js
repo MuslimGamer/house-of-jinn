@@ -25,7 +25,11 @@ Game = {
         }
         var e = Crafty.e("Player");
 
-        Crafty.e("WandererJinn");
+        var jinnsToSpawn = config("jinns");
+        for (var i = 0; i < jinnsToSpawn.length; i++) {
+            var jinn = jinnsToSpawn[i];
+            Crafty.e(jinn + "Jinn");
+        }
     }
 }
 
