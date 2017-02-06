@@ -19,14 +19,34 @@ Crafty.c('Jinn', {
             startX = randomBetween(targetRoom.x + BORDER_BUFFER, targetRoom.x + targetRoom.width - (2 * BORDER_BUFFER));
             startY = randomBetween(targetRoom.y + BORDER_BUFFER, targetRoom.y + targetRoom.height - (2 * BORDER_BUFFER));
         }
+		
         this.move(startX, startY);
         this.pickNewTargetRoom();
+		self.huntingPlayer = false;
 		
 		this.bind("EnterFrame", function() {
-			var myRoom = map.findRoomWith(self);
-			var playerRoom = map.findRoomWith(player);
-			if (myRoom == playerRoom) {
-				console.log("CHARGE!!! " + myRoom + " vs. " + playerRoom);
+			if (self.huntingPlayer == false) {
+				// Charge the player. This is a one-way process (we never go back
+				// to wandering from room to room) because the player just doesn't
+				// have any chance of survival. Sorry, old man, it's game over.
+				var myRoom = map.findRoomWith(self);
+				var playerRoom = map.findRoomWith(player);
+				if (myRoom == playerRoom) {
+					self.huntingPlayer = true;
+				}
+			} else {
+				self.cancelTween("x");
+				self.cancelTween("y");
+				// Calculating distance and moving at an appropriate speed is overrated.
+				// It's expensive, and we're doing this every frame. never mind that.
+				// Instead, just charge toward the player at a relatively fast rate.
+				// We're going to cancel and re-issue this tween every frame.
+				// We don't want to slow down when super close, so if Close Enough, move Super Fast.
+				if (Math.abs(self.x - player.x) + Math.abs(self.y - player.y) <= 150) {
+					this.move(player.x, player.y, 0.25);
+				} else {
+					this.move(player.x, player.y, config("jinnHuntTweenTime"));
+				}
 			}
 		});
     },

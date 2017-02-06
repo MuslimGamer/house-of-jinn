@@ -3,5 +3,6 @@ externs = {
     "roomHeight": 256,
     "wallThickness": 8,
     "jinnVelocity": 100, // pixels per second
-    "jinnWaitTimeSeconds": 3
+    "jinnWaitTimeSeconds": 3,
+	"jinnHuntTweenTime": 1
 }
