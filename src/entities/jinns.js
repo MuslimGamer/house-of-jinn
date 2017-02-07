@@ -15,7 +15,7 @@ Crafty.c("WalkerJinn", {
     var player = Crafty("Player");
     this.moving = false;
 
-    this.requires("Jinn, ChargePlayerOnSight").size(32, 32).color("#882222");
+    this.requires("Jinn, Walker, ChargePlayerOnSight").size(32, 32).color("#882222");
 
     this.bind("EnterFrame", function() {
       // Hunt on sight. Don't hunt when out of sight.
@@ -39,31 +39,6 @@ Crafty.c("WalkerJinn", {
           this.moveToAdjacentRoom();
         }
       }
-    });
-  },
-
-  moveToAdjacentRoom: function() {
-    this.moving = true;
-    var myRoom = map.findRoomWith(this);
-    var directions = myRoom.data.doorDirections + myRoom.data.openDirections; // string, eg. se => south/east
-    var direction = directions[randomBetween(0, directions.length)];
-    var xOffset = 0;
-    var yOffset  = 0;
-
-    if (direction == "e") {
-      xOffset = 1;
-    } else if (direction == "w") {
-      xOffset = -1;
-    } else if (direction == "n") {
-      yOffset = -1;
-    } else if (direction == "s") {
-      yOffset = 1;
-    }
-
-    var targetRoom = map.getRoomAt(myRoom.data.x + xOffset, myRoom.data.y + yOffset);
-    this.jinnMove(targetRoom, function() {
-      this.moving = false;
-      this.moveToAdjacentRoom();
     });
   }
 });
@@ -162,6 +137,7 @@ Crafty.c('Jinn', {
 /////////
 // Components that encapsulate common behaviours
 /////////
+// Charges the player once they're in the same room.
 Crafty.c("ChargePlayerOnSight", {
   init: function() {
     var player = Crafty("Player");
@@ -198,3 +174,31 @@ Crafty.c("ChargePlayerOnSight", {
     }
   }
 });
+
+// Walks from room to room
+Crafty.c("Walker", {
+  moveToAdjacentRoom: function() {
+    this.moving = true;
+    var myRoom = map.findRoomWith(this);
+    var directions = myRoom.data.doorDirections + myRoom.data.openDirections; // string, eg. se => south/east
+    var direction = directions[randomBetween(0, directions.length)];
+    var xOffset = 0;
+    var yOffset  = 0;
+
+    if (direction == "e") {
+      xOffset = 1;
+    } else if (direction == "w") {
+      xOffset = -1;
+    } else if (direction == "n") {
+      yOffset = -1;
+    } else if (direction == "s") {
+      yOffset = 1;
+    }
+
+    var targetRoom = map.getRoomAt(myRoom.data.x + xOffset, myRoom.data.y + yOffset);
+    this.jinnMove(targetRoom, function() {
+      this.moving = false;
+      this.moveToAdjacentRoom();
+    });
+  }
+})
