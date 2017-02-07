@@ -6,5 +6,5 @@ externs = {
     "jinnWaitTimeSeconds": 3,
 	"jinnHuntTweenTime": 1,
     "jinnHuntPounceTweenTime": 0.25,
-    "jinns": ["Walker"]
+    "jinns": ["ShyGuy"]
 }
