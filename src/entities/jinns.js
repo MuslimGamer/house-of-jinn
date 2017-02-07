@@ -32,18 +32,7 @@ Crafty.c("WalkerJinn", {
       }
 
       if (this.huntingPlayer) {
-        this.cancelTween("x");
-        this.cancelTween("y");
-        // Calculating distance and moving at an appropriate speed is overrated.
-        // It's expensive, and we're doing this every frame. never mind that.
-        // Instead, just charge toward the player at a relatively fast rate.
-        // We're going to cancel and re-issue this tween every frame.
-        // We don't want to slow down when super close, so if Close Enough, move Super Fast.
-        if (Math.abs(this.x - player.x) + Math.abs(this.y - player.y) <= 150) {
-          this.move(player.x, player.y, config("jinnHuntPounceTweenTime"));
-        } else {
-          this.move(player.x, player.y, config("jinnHuntTweenTime"));
-        }
+        this.chargeAtPlayer();
       } else {
         // Move to adjacent room
         if (this.moving == false) {
@@ -188,19 +177,24 @@ Crafty.c("ChargePlayerOnSight", {
           this.huntingPlayer = true;
         }
       } else {
-        this.cancelTween("x");
-        this.cancelTween("y");
-        // Calculating distance and moving at an appropriate speed is overrated.
-        // It's expensive, and we're doing this every frame. never mind that.
-        // Instead, just charge toward the player at a relatively fast rate.
-        // We're going to cancel and re-issue this tween every frame.
-        // We don't want to slow down when super close, so if Close Enough, move Super Fast.
-        if (Math.abs(this.x - player.x) + Math.abs(this.y - player.y) <= 150) {
-          this.move(player.x, player.y, config("jinnHuntPounceTweenTime"));
-        } else {
-          this.move(player.x, player.y, config("jinnHuntTweenTime"));
-        }
+        this.chargeAtPlayer();
       }
     });
+  },
+
+  chargeAtPlayer: function() {
+    var player = Crafty("Player");
+    this.cancelTween("x");
+    this.cancelTween("y");
+    // Calculating distance and moving at an appropriate speed is overrated.
+    // It's expensive, and we're doing this every frame. never mind that.
+    // Instead, just charge toward the player at a relatively fast rate.
+    // We're going to cancel and re-issue this tween every frame.
+    // We don't want to slow down when super close, so if Close Enough, move Super Fast.
+    if (Math.abs(this.x - player.x) + Math.abs(this.y - player.y) <= 150) {
+      this.move(player.x, player.y, config("jinnHuntPounceTweenTime"));
+    } else {
+      this.move(player.x, player.y, config("jinnHuntTweenTime"));
+    }
   }
 });
