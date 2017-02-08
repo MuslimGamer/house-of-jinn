@@ -2,6 +2,23 @@
 // Specific types of jinns
 /////////
 
+// Walks from room to room. Really slowly. When he sees you, starts oozing
+// toward you. If you leave that room, he appears from the walls again.
+Crafty.c("JumperJinn", {
+  init: function() {
+    this.requires("Jinn, Walker, ChargePlayerOnSight").size(32, 32).color("#55aaff");
+    this.sawPlayer = false;
+    this.chargeMultiplier = 0.5;
+
+    this.bind("EnterFrame", function() {
+      if (!this.sawPlayer) {
+        this.moveToAdjacentRoom();
+      }
+    });
+  }
+});
+
+// Stays still. Once he sees you, unrelentingly chases you.
 Crafty.c("ShyGuyJinn", {
   init: function() {
     var self = this;
@@ -9,11 +26,11 @@ Crafty.c("ShyGuyJinn", {
   }
 });
 
+// Walks from room to room. Once he sees you, unrelentingly chases you.
 Crafty.c("WalkerJinn", {
   init: function() {
     var self = this;
     var player = Crafty("Player");
-    this.moving = false;
 
     this.requires("Jinn, Walker, ChargePlayerOnSight").size(32, 32).color("#882222");
 
@@ -35,14 +52,13 @@ Crafty.c("WalkerJinn", {
         this.chargeAtPlayer();
       } else {
         // Move to adjacent room
-        if (this.moving == false) {
-          this.moveToAdjacentRoom();
-        }
+        this.moveToAdjacentRoom();
       }
     });
   }
 });
 
+// Wanders randomly through the mansion. Once he sees you, chases you unrelentingly.
 Crafty.c("WandererJinn", {
   init: function() {
     var self = this;
@@ -115,6 +131,9 @@ Crafty.c('Jinn', {
     t2.textColor("white");
   },
 
+  // Do this jinn thing where we move at a constant velocity toward our target.
+  // Once it reaches, waits jinnWaitTimeSeconds (see config.json), then invokes
+  // onArriveCallback.
   jinnMove: function(targetRoom, onArriveCallback) {
     const BORDER_BUFFER = 16;
     var targetX = randomBetween(targetRoom.x + BORDER_BUFFER, targetRoom.x + targetRoom.width - (2 * BORDER_BUFFER));
@@ -153,12 +172,16 @@ Crafty.c("ChargePlayerOnSight", {
           this.huntingPlayer = true;
         }
       } else {
-        this.chargeAtPlayer();
+        this.chargeAtPlayer(this.chargeMultiplier || 1);
       }
     });
   },
 
-  chargeAtPlayer: function() {
+  chargeAtPlayer: function(speedMultiplier) {
+    if (typeof(speedMultiplier) === "undefined") {
+      speedMultiplier = 1;
+    }
+    console.log(speedMultiplier);
     var player = Crafty("Player");
     this.cancelTween("x");
     this.cancelTween("y");
@@ -167,38 +190,53 @@ Crafty.c("ChargePlayerOnSight", {
     // Instead, just charge toward the player at a relatively fast rate.
     // We're going to cancel and re-issue this tween every frame.
     // We don't want to slow down when super close, so if Close Enough, move Super Fast.
+
+    // Since we're specifying travel time, divide by speed multiplier
     if (Math.abs(this.x - player.x) + Math.abs(this.y - player.y) <= 150) {
-      this.move(player.x, player.y, config("jinnHuntPounceTweenTime"));
+      this.move(player.x, player.y, config("jinnHuntPounceTweenTime") / speedMultiplier);
     } else {
-      this.move(player.x, player.y, config("jinnHuntTweenTime"));
+      this.move(player.x, player.y, config("jinnHuntTweenTime") / speedMultiplier);
     }
   }
 });
 
-// Walks from room to room
+// Walks from room to room "legitimately" (only walks through openings and
+// walls which have doors in them).
 Crafty.c("Walker", {
+  init: function() {
+    this.moving = false;
+  },
+
   moveToAdjacentRoom: function() {
-    this.moving = true;
-    var myRoom = map.findRoomWith(this);
-    var directions = myRoom.data.doorDirections + myRoom.data.openDirections; // string, eg. se => south/east
-    var direction = directions[randomBetween(0, directions.length)];
-    var xOffset = 0;
-    var yOffset  = 0;
+    // Don't do this every frame, just start this once and change target room
+    // when we reach our desination.
+    if (this.moving == false) {
+      this.moving = true;
+      var myRoom = map.findRoomWith(this);
+      if (typeof(myRoom) === "undefined") {
+        // Something went horribly wrong. Don't move.
+        return;
+      }
+      var directions = myRoom.data.doorDirections + myRoom.data.openDirections; // string, eg. se => south/east
+      var direction = directions[randomBetween(0, directions.length)];
+      var xOffset = 0;
+      var yOffset  = 0;
 
-    if (direction == "e") {
-      xOffset = 1;
-    } else if (direction == "w") {
-      xOffset = -1;
-    } else if (direction == "n") {
-      yOffset = -1;
-    } else if (direction == "s") {
-      yOffset = 1;
+      if (direction == "e") {
+        xOffset = 1;
+      } else if (direction == "w") {
+        xOffset = -1;
+      } else if (direction == "n") {
+        yOffset = -1;
+      } else if (direction == "s") {
+        yOffset = 1;
+      }
+
+      var targetRoom = map.getRoomAt(myRoom.data.x + xOffset, myRoom.data.y + yOffset);
+      this.jinnMove(targetRoom, function() {
+        this.moving = false;
+        this.moveToAdjacentRoom();
+      });
     }
-
-    var targetRoom = map.getRoomAt(myRoom.data.x + xOffset, myRoom.data.y + yOffset);
-    this.jinnMove(targetRoom, function() {
-      this.moving = false;
-      this.moveToAdjacentRoom();
-    });
   }
 })
