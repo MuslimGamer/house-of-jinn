@@ -2,46 +2,89 @@
 // Specific types of jinns
 /////////
 
+// Walks from room to room. On sight, self-replicates continuously.
+Crafty.c("SplitterJinn", {
+    init: function() {
+        this.requires("Jinn, Walker, ChargePlayerOnSight, WalkUntilSeesPlayer")
+            .size(16, 16).color("#ffdd00");
+
+        var player = Crafty("Player");
+        this.lastSplit = new Date();
+        this.canSplit = true;
+        this.canHunt = true;
+
+        this.onSight(function() {
+            if (!this.canHunt) {
+                return;
+            }
+            if (!this.canSplit) {
+                this.huntPlayer();
+            } else {
+                var myRoom = map.findRoomWith(this);
+                var playerRoom = map.findRoomWith(player);
+                if (!player.isDead) {
+                    // Split if it's been long enough.
+                    var now = new Date();
+                    if (now - this.lastSplit >= config("splitterSplitsEveryNSeconds") * 1000) {
+                        this.lastSplit = now;
+                        var clone = Crafty.e("SplitterJinn").dontSplit();
+                        
+                        var targetX = randomBetween(0, 100) < 50 ? -1 : 1;
+                        var targetY = randomBetween(0, 100) < 50 ? -1 : 1;
+                        var distance = config("splitterDistanceOnSplit");
+
+                        clone.move(this.x, this.y);
+                        clone.canHunt = false;
+                        clone.after(config("splitterCloneWaitTimeSeconds"), function() {
+                            clone.canHunt = true;
+                        });
+                    }
+
+                    this.huntPlayer();
+                }
+            }
+        });
+    },
+
+    dontSplit: function() {
+        this.canSplit = false;
+        return this;
+    }
+});
+
 // Walks from room to room. Really slowly. When he sees you, starts oozing
 // toward you. If you leave that room, he appears from the walls again.
 Crafty.c("JumperJinn", {
     init: function() {
-        this.requires("Jinn, Walker, ChargePlayerOnSight").size(32, 32).color("#55aaff");
-        this.sawPlayer = false;
+        this.requires("Jinn, Walker, ChargePlayerOnSight, WalkUntilSeesPlayer")
+            .size(32, 32).color("#55aaff");
+
         this.chargeMultiplier = 0.5;
         var player = Crafty("Player");
 
-        this.bind("EnterFrame", function() {
+        this.onSight(function() {
             var myRoom = map.findRoomWith(this);
             var playerRoom = map.findRoomWith(player);
-
-            if (!this.sawPlayer) {
-                this.moveToAdjacentRoom();
+            if (!player.isDead) {
                 if (myRoom == playerRoom) {
-                    this.sawPlayer = true;
-                }
-            } else {
-                if (!player.isDead) {
-                    if (myRoom == playerRoom) {
-                        this.huntPlayer();
-                    } else {
-                        // Teleport to the player's room. MUAHAHHAHAHA!
-                        var roomWidth = config("roomWidth");
-                        var roomHeight = config("roomHeight");
-                        var teleportX = playerRoom.x + randomBetween(0, roomWidth / 4);
-                        var teleportY = playerRoom.y + randomBetween(0, roomHeight / 4);
-                        
-                        if (Math.abs(playerRoom.x - player.x) < Math.abs(playerRoom.x + roomWidth - player.x)) {
-                            // Player is closer to the LHS of the room; spawn on the RHS
-                            teleportX += roomWidth / 2;
-                        }
-                        if (Math.abs(playerRoom.y - player.y) < Math.abs(playerRoom.y + roomHeight - player.y)) {
-                            // Player is closer to the top of the room; spawn on the bottom
-                            teleportY += roomHeight / 2;
-                        }
-
-                        this.move(teleportX, teleportY);
+                    this.huntPlayer();
+                } else {
+                    // Teleport to the player's room. MUAHAHHAHAHA!
+                    var roomWidth = config("roomWidth");
+                    var roomHeight = config("roomHeight");
+                    var teleportX = playerRoom.x + randomBetween(0, roomWidth / 4);
+                    var teleportY = playerRoom.y + randomBetween(0, roomHeight / 4);
+                    
+                    if (Math.abs(playerRoom.x - player.x) < Math.abs(playerRoom.x + roomWidth - player.x)) {
+                        // Player is closer to the LHS of the room; spawn on the RHS
+                        teleportX += roomWidth / 2;
                     }
+                    if (Math.abs(playerRoom.y - player.y) < Math.abs(playerRoom.y + roomHeight - player.y)) {
+                        // Player is closer to the top of the room; spawn on the bottom
+                        teleportY += roomHeight / 2;
+                    }
+
+                    this.move(teleportX, teleportY);
                 }
             }
         });
@@ -275,3 +318,32 @@ Crafty.c("Walker", {
         }
     }
 })
+
+// Walk around until you see the player. Once seen, invokes .onSight(...)
+// callback every frame.
+Crafty.c("WalkUntilSeesPlayer", {
+    init: function() {
+        this.requires("Jinn, Walker, ChargePlayerOnSight");
+        this.sawPlayer = false;
+        var player = Crafty("Player");
+        this.onSightCallback = null;
+
+        this.bind("EnterFrame", function() {
+            var myRoom = map.findRoomWith(this);
+            var playerRoom = map.findRoomWith(player);
+
+            if (!this.sawPlayer) {
+                this.moveToAdjacentRoom();
+                if (myRoom == playerRoom) {
+                    this.sawPlayer = true;
+                }
+            } else {
+                this.onSightCallback();
+            }
+        });
+    },
+
+    onSight: function(callback) {
+        this.onSightCallback = callback;
+    }
+});

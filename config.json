@@ -6,5 +6,7 @@ externs = {
     "jinnWaitTimeSeconds": 3,
 	"jinnHuntTweenTime": 1,
     "jinnHuntPounceTweenTime": 0.25,
-    "jinns": ["Jumper"]
+    "splitterSplitsEveryNSeconds": 0.5,
+    "splitterCloneWaitTimeSeconds": 1,
+    "jinns": ["Splitter"]
 }
