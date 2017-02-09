@@ -154,6 +154,7 @@ Crafty.c('Common', {
 
     // Used for cancelling "after" and "repeatedly" events
     this.timerEvents = [];
+    this.isDead = false;
   },
 
   // Do something once, after a certain amount of time.
@@ -182,6 +183,7 @@ Crafty.c('Common', {
   },
 
   die: function() {
+    this.isDead = true;
     this.destroy();
     return this;
   },
@@ -224,15 +226,25 @@ Crafty.c('Common', {
 
 // Overrides for built-in functions like 'move', etc.
 Crafty.c('Moveable', {
+  init: function() {
+    this.requires("Tween");
+  },
+
   // Tween to location in T fractional seconds (defaults to 1.0s)
   move: function(x, y, t, callback) {
+    // We might be tweening. Even if not, if there's a tween in progress
+    // that affects our X or Y, strange things will happen: we'll be in
+    // two places at once, collision handlers won't fire, etc.
+    // To be safe, cancel any tweens on our x/y coordinates.
+    this.cancelTween("x");
+    this.cancelTween("y");
+    
     if (t == null || t == 0) {
       this.attr({ x: x, y: y });
       if (callback != null) {
         callback();
       }
     } else {
-      this.requires('Tween');
       this.tween({ x: x, y: y }, t * 1000);
       this.bind('TweenEnd', callback);
     }

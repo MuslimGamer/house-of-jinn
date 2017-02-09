@@ -21,33 +21,27 @@ Crafty.c("JumperJinn", {
                     this.sawPlayer = true;
                 }
             } else {
-                if (myRoom == playerRoom) {
-                    this.huntPlayer();
-                } else {
-                    // Teleport to the player's room. MUAHAHHAHAHA!
-                    var roomWidth = config("roomWidth");
-                    var roomHeight = config("roomHeight");
-                    var teleportX = playerRoom.x + randomBetween(0, roomWidth / 4);
-                    var teleportY = playerRoom.y + randomBetween(0, roomHeight / 4);
-                    
-                    if (Math.abs(playerRoom.x - player.x) < Math.abs(playerRoom.x + roomWidth - player.x)) {
-                        // Player is closer to the LHS of the room; spawn on the RHS
-                        teleportX += roomWidth / 2;
+                if (!player.isDead) {
+                    if (myRoom == playerRoom) {
+                        this.huntPlayer();
+                    } else {
+                        // Teleport to the player's room. MUAHAHHAHAHA!
+                        var roomWidth = config("roomWidth");
+                        var roomHeight = config("roomHeight");
+                        var teleportX = playerRoom.x + randomBetween(0, roomWidth / 4);
+                        var teleportY = playerRoom.y + randomBetween(0, roomHeight / 4);
+                        
+                        if (Math.abs(playerRoom.x - player.x) < Math.abs(playerRoom.x + roomWidth - player.x)) {
+                            // Player is closer to the LHS of the room; spawn on the RHS
+                            teleportX += roomWidth / 2;
+                        }
+                        if (Math.abs(playerRoom.y - player.y) < Math.abs(playerRoom.y + roomHeight - player.y)) {
+                            // Player is closer to the top of the room; spawn on the bottom
+                            teleportY += roomHeight / 2;
+                        }
+
+                        this.move(teleportX, teleportY);
                     }
-                    if (Math.abs(playerRoom.y - player.y) < Math.abs(playerRoom.y + roomHeight - player.y)) {
-                        // Player is closer to the top of the room; spawn on the bottom
-                        teleportY += roomHeight / 2;
-                    }
-
-                    // Stop trying to move/tween
-                    this.cancelTween("x");
-                    this.cancelTween("y");
-
-                    this.x = teleportX;
-                    this.y = teleportY;
-                    
-                    console.log("BLINK " + myRoom.data.id + " => " + playerRoom.data.id);
-
                 }
             }
         });
