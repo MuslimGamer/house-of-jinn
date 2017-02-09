@@ -2,7 +2,73 @@
 // Specific types of jinns
 /////////
 
-// Walks from room to room. On sight, self-replicates continuously.
+// Picks whichever adjacent room brings it closest to the player, and walks into it.
+// If both (or multiple) rooms are equidistant, picks randomly between them.
+Crafty.c("StalkerJinn", {
+    init: function() {
+        this.requires("WalkerJinn").size(32, 32).color("#ff00ff");
+        this.moving = false;
+        this.onLostSight(this.moveCloserToPlayer);
+    },
+
+    moveCloserToPlayer: function() {
+        var player = Crafty("Player");        
+        // Don't do this every frame, just start this once and change target room
+        // when we reach our desination.
+        if (this.moving == false) {
+            this.moving = true;
+            var myRoom = map.findRoomWith(this);
+            if (typeof(myRoom) === "undefined") {
+                // Something went horribly wrong. Don't move.
+                return;
+            }
+            var directions = myRoom.data.doorDirections + myRoom.data.openDirections; // string, eg. se => south/east
+            var closest = [];
+            var closestDistance = 2000000000;
+            var playerRoom = map.findRoomWith(player).data;
+
+            // No square root necessary, squared distance is fine
+            for (var i = 0; i < directions.length; i++) {
+                var direction = directions[i];
+
+                var xOffset = 0; 
+                var yOffset = 0;
+                
+                if (direction == "e") {
+                    xOffset = 1;
+                } else if (direction == "w") {
+                    xOffset = -1;
+                } else if (direction == "n") {
+                    yOffset = -1;
+                } else if (direction == "s") {
+                    yOffset = 1;
+                }
+
+                var targetRoom = map.getRoomAt(myRoom.data.x + xOffset, myRoom.data.y + yOffset);
+                // Don't compare actual distance; compare grid distance. This makes two rooms equal if they
+                // are equidistant from the player (using room x/y just compares the top-left corner).
+                distance = Math.pow(playerRoom.x - targetRoom.data.x, 2) + Math.pow(playerRoom.y - targetRoom.data.y, 2);
+                if (distance < closestDistance) {
+                    closest = [targetRoom];
+                    closestDistance = distance;
+                } else if (distance == closestDistance) {
+                    closest.push(targetRoom);
+                }
+            }
+            
+            // If closestDistance is zero, we're about to kill the player. 
+            // Roar or do something awesome.
+            var target = closest[randomBetween(0, closest.length)];
+            this.jinnMove(target, function() {
+                this.moving = false;
+                this.moveCloserToPlayer();
+            });
+        }
+    }
+});
+
+// Walks from room to room. On sight, chases, and self-replicates continuously.
+// Only the original (alpha/prime) can replicate. The others can only chase.
 Crafty.c("SplitterJinn", {
     init: function() {
         this.requires("Jinn, Walker, ChargePlayerOnSight, WalkUntilSeesPlayer")
@@ -35,6 +101,8 @@ Crafty.c("SplitterJinn", {
 
                         clone.move(this.x, this.y);
                         clone.canHunt = false;
+                        // Wait a fractional second before you hunt. This keeps the clones
+                        // from running exactly on top of the original. And makes it more scary.
                         clone.after(config("splitterCloneWaitTimeSeconds"), function() {
                             clone.canHunt = true;
                         });
@@ -103,10 +171,11 @@ Crafty.c("ShyGuyJinn", {
 // Walks from room to room. Once he sees you, unrelentingly chases you.
 Crafty.c("WalkerJinn", {
     init: function() {
+        this.requires("Jinn, Walker, ChargePlayerOnSight").size(32, 32).color("#882222");
+
         var self = this;
         var player = Crafty("Player");
-
-        this.requires("Jinn, Walker, ChargePlayerOnSight").size(32, 32).color("#882222");
+        this.lostSightCallback = this.moveToAdjacentRoom;
 
         this.bind("EnterFrame", function() {
             // Hunt on sight. Don't hunt when out of sight.
@@ -126,9 +195,14 @@ Crafty.c("WalkerJinn", {
                 this.chargeAtPlayer();
             } else {
                 // Move to adjacent room
-                this.moveToAdjacentRoom();
+                this.lostSightCallback();
             }
         });
+    },
+
+    // Call to set what we do when we lose sight of the player
+    onLostSight: function(callback) {
+        this.lostSightCallback = callback;
     }
 });
 
