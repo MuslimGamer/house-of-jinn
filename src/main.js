@@ -4,12 +4,14 @@ Game = {
         width: window.innerWidth,
         height: window.innerHeight
     },
+
     start: function() {
         // Game world is whatever fits on-screen
         Crafty.init(Game.view.width, Game.view.height);
         Crafty.background('#008800');
         map.generate();
         console.log("Map generated, " + map.locations.length + " Rooms generated");
+        Crafty.viewport.clampToEntities = false; // Bubbler can cause camera to break
 
         var roomWidth = parseInt(config("roomWidth"));
         var roomHeight = parseInt(config("roomHeight"));
