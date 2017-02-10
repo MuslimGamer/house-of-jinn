@@ -2,8 +2,8 @@
 // Specific types of jinns
 /////////
 
-// Spawns ... things ... in every direction, constantly. If one touches you, it
-// changes direction and charges at you full-force.
+// Spawns bubbles in every direction, constantly. If one touches you,
+// the jinn changes direction and charges at you full-force.
 Crafty.c("BubblerJinn", {
     init: function() {
         this.lastSpawn = new Date();
@@ -13,7 +13,7 @@ Crafty.c("BubblerJinn", {
             var now = new Date();
             if ((now - this.lastSpawn) >= config("bubblerSpawnsEveryNSeconds") * 1000) {
                 this.lastSpawn = now;
-                Crafty.e("Bubble").move(this.x + (this.width() / 2), this.y + (this.height() / 2));
+                Crafty.e("Bubble").setParent(this);
             }
         })
     }
@@ -31,6 +31,24 @@ Crafty.c("Bubble", {
         this.velocity(vx, vy);
         this.tween({ w: 0, h: 0 }, BUBBLE_LIFETIME * 1000);
         this.after(BUBBLE_LIFETIME, function() { this.die(); });
+        var self = this;
+
+        this.collide("Player", function() {
+            if (self.parent.huntingPlayer == false) {
+                self.parent.color("red");
+                self.parent.huntingPlayer = true;
+                // roar!!
+                Crafty.forEach("Bubble", function(b) {
+                    b.color("red");
+                })
+            }
+        })
+    },
+
+    setParent: function(parent) {
+        this.parent = parent;
+        this.move(parent.x + (parent.width() / 2), parent.y + (parent.height() / 2));
+        this.color(parent.color());
     }
 });
 
