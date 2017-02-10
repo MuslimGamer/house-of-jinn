@@ -2,6 +2,38 @@
 // Specific types of jinns
 /////////
 
+// Spawns ... things ... in every direction, constantly. If one touches you, it
+// changes direction and charges at you full-force.
+Crafty.c("BubblerJinn", {
+    init: function() {
+        this.lastSpawn = new Date();
+        this.requires("WandererJinn").color("#8800ff").size(64, 64);
+
+        this.bind("EnterFrame", function() {
+            var now = new Date();
+            if ((now - this.lastSpawn) >= config("bubblerSpawnsEveryNSeconds") * 1000) {
+                this.lastSpawn = now;
+                Crafty.e("Bubble").move(this.x + (this.width() / 2), this.y + (this.height() / 2));
+            }
+        })
+    }
+})
+
+Crafty.c("Bubble", {
+    init: function() {
+        var BUBBLE_VELOCITY = config("bubblerSpawnVelocity");
+        var BUBBLE_LIFETIME = config("bubblerSpawnLifespanSeconds");
+        
+        var vx = randomBetween(-BUBBLE_VELOCITY, BUBBLE_VELOCITY);
+        var vy = randomBetween(-BUBBLE_VELOCITY, BUBBLE_VELOCITY);
+
+        this.requires("Actor").size(16, 16).color("#8800ff");
+        this.velocity(vx, vy);
+        this.tween({ w: 0, h: 0 }, BUBBLE_LIFETIME * 1000);
+        this.after(BUBBLE_LIFETIME, function() { this.die(); });
+    }
+});
+
 // Picks whichever adjacent room brings it closest to the player, and walks into it.
 // If both (or multiple) rooms are equidistant, picks randomly between them.
 Crafty.c("StalkerJinn", {

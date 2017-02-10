@@ -8,5 +8,8 @@ externs = {
     "jinnHuntPounceTweenTime": 0.25,
     "splitterSplitsEveryNSeconds": 0.5,
     "splitterCloneWaitTimeSeconds": 1,
-    "jinns": ["Stalker"]
+    "bubblerSpawnsEveryNSeconds": 0.1,
+    "bubblerSpawnLifespanSeconds": 2,
+    "bubblerSpawnVelocity": 5,
+    "jinns": ["Bubbler"]
 }
