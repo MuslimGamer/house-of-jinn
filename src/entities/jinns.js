@@ -275,7 +275,7 @@ Crafty.c("WandererJinn", {
 /////////
 // Base class with common behaviour, from which we build specific subclasses
 /////////
-Crafty.c('Jinn', {
+Crafty.c("Jinn", {
     init: function() {
         var self = this;
         this.requires("Actor, Tween");
@@ -305,10 +305,12 @@ Crafty.c('Jinn', {
         var t = Crafty.e("Text2").text("Game Over!").fontSize(72);
         t.textColor("white");
         t.move(player.x, player.y);
-        Crafty.viewport.centerOn(t, 1000);
 
-        var t2 = Crafty.e("Text2").text("Click here to restart").fontSize(48).move(t.x, t.y + 72)
-        .click(function() {
+        t.z = 99999;
+        Crafty.viewport.centerOn(t, 1000);
+        var t2 = Crafty.e("Text2").text("Click here to restart").fontSize(48).move(t.x, t.y + 72);
+        t2.z = 99999;        
+        t2.click(function() {
             // Hide a big where calling Game.start immediately causes Game Over to stay on-screen,
             // and the game doesn't actually restart.    Not sure why this happens; keeping a single
             // entity around seems to resolve the issue.
