@@ -337,8 +337,9 @@ Crafty.c("Jinn", {
     // onArriveCallback.
     jinnMove: function(targetRoom, onArriveCallback) {
         const BORDER_BUFFER = 16;
-        var targetX = randomBetween(targetRoom.x + BORDER_BUFFER, targetRoom.x + targetRoom.width - (2 * BORDER_BUFFER));
-        var targetY = randomBetween(targetRoom.y + BORDER_BUFFER, targetRoom.y + targetRoom.height - (2 * BORDER_BUFFER));
+        // Move into the room, but stay at least BORDER_BUFFER pixels away from the edges.
+        var targetX = randomBetween(targetRoom.x + BORDER_BUFFER, targetRoom.x + targetRoom.width - (2 * BORDER_BUFFER) - this.width());
+        var targetY = randomBetween(targetRoom.y + BORDER_BUFFER, targetRoom.y + targetRoom.height - (2 * BORDER_BUFFER) - this.height());
         // move at a constant speed
         var velocity = config("jinnVelocity");
         var distanceInPixels = Math.sqrt(Math.pow(targetX - this.x, 2) + Math.pow(targetY - this.y, 2));
