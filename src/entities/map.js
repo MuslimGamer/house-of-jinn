@@ -24,16 +24,16 @@ map = {
                     var direction = Math.floor(Math.random() * 4);
                     switch (direction) {
                         case 0:
-                            free = currentRoom.N
+                            free = currentRoom.N;
                             break;
                         case 1:
-                            free = currentRoom.S
+                            free = currentRoom.S;
                             break;
                         case 2:
-                            free = currentRoom.E
+                            free = currentRoom.E;
                             break;
                         case 3:
-                            free = currentRoom.W
+                            free = currentRoom.W;
                             break;
                     }
                 }
@@ -42,32 +42,28 @@ map = {
                 //ID = array index
                 var newRoomId = this.locations.length;
                 //Select room type from potential connectable array of room object
-                var roomTypeSelect = Math.floor(Math.random() * currentRoom.connectionType.length);
-                var roomType = currentRoom.connectionType[Math.round(Math.random() * roomTypeSelect)];
+                var roomTypeSelect = randomBetween(0, currentRoom.connectionType.length);
+                var roomType = currentRoom.connectionType[randomBetween(0, roomTypeSelect)];
 
                 //Setup parameters for room placement functions
-                var dir = 0;
-                var x = 0;
-                var y = 0;
+                var dir = "";
+                var x = currentRoom.x;
+                var y = currentRoom.y;
                 switch (direction) {
                     case 0:
-                        x = currentRoom.x;
-                        y = currentRoom.y - 1;
+                        y -= 1;
                         dir = "North";
                         break;
                     case 1:
-                        x = currentRoom.x;
-                        y = currentRoom.y + 1;
+                        y += 1;
                         dir = "South";
                         break;
                     case 2:
-                        x = currentRoom.x + 1;
-                        y = currentRoom.y;
+                        x += 1;
                         dir = "East";
                         break;
                     case 3:
-                        x = currentRoom.x - 1;
-                        y = currentRoom.y;
+                        x -= 1;
                         dir = "West";
                         break;
                 }
