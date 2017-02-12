@@ -1,6 +1,16 @@
 map = {
     generate: function() {
-        this.generateAsymetricalMansion();
+        // Individual segments that may be a room or part of a room
+        // eg. two adjacent locations without a dividing wall make up
+        // a tall room. Three connected length-wise make a hallway. 
+        // These are RoomData instances.   
+        this.locations = [];
+
+        // (x, y) => room (NOT room data)
+        this.roomPositions = {};
+
+        this.generateSymmetricalMansion(5, 5);
+        this.createRoomEntities();
     },
 
     setRoomAt: function(x, y, room) {
@@ -19,15 +29,28 @@ map = {
 		return map.getRoomAt(x, y);
 	},
 
+    generateSymmetricalMansion: function(roomsWide, roomsHigh) {
+        // generate a roomsHigh x roomsHigh mansion
+        // any room randomly on the top or bottom can be the entrance
+        var isTop = randomBetween(0, 100) < 50;
+        var entranceRoomX = parseInt(Math.floor(roomsWide / 2));
+        var entranceRoomY = isTop ? 0 : roomsHigh - 1;
+        
+        var roomWidth = config("roomWidth");
+        var roomHeight = config("roomHeight");
+
+        for (var roomY = 0; roomY < roomsHigh; roomY++) {
+            for (var roomX = 0; roomX < roomsWide; roomX++) {
+                roomType = (roomX == entranceRoomX && roomY == entranceRoomY ? "Entrance" : "Hallway");
+                var room = Crafty.e(roomType);
+                room.x = roomX;
+                room.y = roomY;
+                this.locations.push(room);
+            }
+        }
+    },
+
     generateAsymetricalMansion: function() {
-        // Individual segments that may be a room or part of a room
-        // eg. two adjacent locations without a dividing wall make up
-        // a tall room. Three connected length-wise make a hallway.    
-        this.locations = [];
-
-        // (x, y) => room
-        this.roomPositions = {};
-
         var newRoom = Crafty.e("Entrance");
         newRoom.at(0, 0);
         this.locations.push(newRoom);
@@ -119,5 +142,24 @@ map = {
             //Set connection strings	
             currentRoom.setDirectionData();
         }
+    },
+
+    createRoomEntities: function() {
+        var roomWidth = config("roomWidth");
+        var roomHeight = config("roomHeight");
+
+        for (var roomIndex = 0; roomIndex < this.locations.length; roomIndex++) {
+            var currentRoom = this.locations[roomIndex];
+
+            var newRoom = Crafty.e("Room")
+                .create(currentRoom.x * roomWidth, currentRoom.y * roomHeight, roomWidth, roomHeight)
+                .setupWalls(currentRoom.openDirections, currentRoom.wallDirections, currentRoom.doorDirections);
+            
+            newRoom.data = currentRoom;
+            currentRoom.entity = newRoom;
+            this.setRoomAt(currentRoom.x, currentRoom.y, newRoom);
+        }
+
+        console.log("Created " + this.locations.length + " rooms.");
     }
 }
