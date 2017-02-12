@@ -13,7 +13,7 @@ map = {
         this.width = 5;
         this.height = 5;
 
-        this.generateSymmetricalMansion();
+        this.generateAsymmetricalMansion();
         this.createRoomEntities();
     },
 
@@ -102,7 +102,7 @@ map = {
         }
     },
 
-    generateAsymetricalMansion: function() {
+    generateAsymmetricalMansion: function() {
         var newRoom = Crafty.e("Entrance");
         newRoom.at(0, 0);
         this.locations.push(newRoom);
@@ -147,19 +147,19 @@ map = {
                 switch (direction) {
                     case 0:
                         y -= 1;
-                        dir = "North";
+                        dir = "South";
                         break;
                     case 1:
                         y += 1;
-                        dir = "South";
+                        dir = "North";
                         break;
                     case 2:
                         x += 1;
-                        dir = "East";
+                        dir = "West";
                         break;
                     case 3:
                         x -= 1;
-                        dir = "West";
+                        dir = "East";
                         break;
                 }
 
