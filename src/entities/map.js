@@ -189,9 +189,14 @@ map = {
                 {
                     this.locations[newRoomId].connect(roomIndex, dir);
                 }
-            }
-            //Set connection strings	
-            currentRoom.setDirectionData();
+            }            
+        }
+
+        for (var i = 0; i < this.locations.length; i++) {
+            // Iterate and finally set direction data. This is to guarantee consistent two-way doors.
+            // If we call this before all the rooms are connected, someone may onnect to us and thus
+            // cause a one-way connection or a broken connection.
+            this.locations[i].setDirectionData();
         }
     },
 
@@ -235,7 +240,6 @@ map = {
                 if (typeof(room) === "undefined") {
                     // Grass patch. Darkness it.
                     Crafty.e("Darkness").move(x * roomWidth, y * roomHeight);
-                    console.log("patched at " + x + ", " + y);
                 }
             }
         }

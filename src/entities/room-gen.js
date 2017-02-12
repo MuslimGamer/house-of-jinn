@@ -75,39 +75,31 @@ Crafty.c("RoomData", {
     setDirectionData: function() {
         if (this.N == undefined) {
             this.wallDirections += 'n';
-        } else {
-            if (this.Type == map.locations[this.N].Type) {
+        } else if (this.Type == map.locations[this.N].Type) {
                 this.openDirections += 'n';
-            } else {
-                this.doorDirections += 'n';
-            }
+        } else {
+            this.doorDirections += 'n';
         }
         if (this.S == undefined) {
             this.wallDirections += 's';
-        } else {
-            if (this.Type == map.locations[this.S].Type) {
+        } else if (this.Type == map.locations[this.S].Type) {
                 this.openDirections += 's';
-            } else {
-                this.doorDirections += 's';
-            }
+        } else {
+            this.doorDirections += 's';
         }
         if (this.E == undefined) {
             this.wallDirections += 'e';
+        } else if (this.Type == map.locations[this.E].Type) {
+            this.openDirections += 'e';
         } else {
-            if (this.Type == map.locations[this.E].Type) {
-                this.openDirections += 'e';
-            } else {
-                this.doorDirections += 'e';
-            }
+            this.doorDirections += 'e';
         }
         if (this.W == undefined) {
             this.wallDirections += 'w';
+        } else if (this.Type == map.locations[this.W].Type) {
+            this.openDirections += 'w';
         } else {
-            if (this.Type == map.locations[this.W].Type) {
-                this.openDirections += 'w';
-            } else {
-                this.doorDirections += 'w';
-            }
+            this.doorDirections += 'w';
         }
     },
 
