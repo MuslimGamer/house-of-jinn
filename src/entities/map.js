@@ -9,7 +9,11 @@ map = {
         // (x, y) => room (NOT room data)
         this.roomPositions = {};
 
-        this.generateSymmetricalMansion(5, 5);
+        // 5x5 mansion
+        this.width = 5;
+        this.height = 5;
+
+        this.generateSymmetricalMansion();
         this.createRoomEntities();
     },
 
@@ -29,7 +33,10 @@ map = {
 		return map.getRoomAt(x, y);
 	},
 
-    generateSymmetricalMansion: function(roomsWide, roomsHigh) {
+    generateSymmetricalMansion: function() {
+        var roomsWide = this.width;
+        var roomsHigh = this.height;
+
         // generate a roomsHigh x roomsHigh mansion
         // any room randomly on the top or bottom can be the entrance
         var isTop = randomBetween(0, 100) < 50;
@@ -39,14 +46,59 @@ map = {
         var roomWidth = config("roomWidth");
         var roomHeight = config("roomHeight");
 
+        // Create a bunch of hallways. 
         for (var roomY = 0; roomY < roomsHigh; roomY++) {
             for (var roomX = 0; roomX < roomsWide; roomX++) {
-                roomType = (roomX == entranceRoomX && roomY == entranceRoomY ? "Entrance" : "Hallway");
-                var room = Crafty.e(roomType);
+                var room = Crafty.e("Hallway");
                 room.x = roomX;
                 room.y = roomY;
                 this.locations.push(room);
             }
+        }
+
+        // Set up connections and randomly pick types. There's no easy way to do
+        // this that guarantees everything is connected (all rooms are reachable),
+        // while maintaining requirements of which room can connect to which.
+        // We may end up changing a room type a few times, and connecting to a few
+        // more things than we should; that's okay. Right?
+
+        for (var roomY = 0; roomY < roomsHigh; roomY++) {
+            for (var roomX = 0; roomX < roomsWide; roomX++) {
+                var room = this.locations[roomY * roomsWide + roomX];
+                var type = room.Type;
+                for (var i = 0; i < room.numRoomsToConnect - room.numConnections(); i++) {
+                    var connectingRoomType = room.connectionType[randomBetween(0, room.connectionType.length)];
+                    var directions = room.unconnectedDirections();
+                    var direction = directions[randomBetween(0, directions.length)];
+                    var x = room.x;
+                    var y = room.y;
+                    switch (direction) {
+                        case "North":
+                            y -= 1;
+                            break;
+                        case "South":
+                            y += 1;
+                            break;
+                        case "East":
+                            x += 1;
+                            break;
+                        case "West":
+                            x -= 1;
+                            break;
+                    }
+                    var target = map.locations[y * map.width + x];
+                    target.Type = connectingRoomType;
+                    var targetIndex = this.locations.indexOf(target);
+                    room.connect(targetIndex, direction);
+                }
+            }
+        }
+
+        // Iterate and finally set direction data. This is to guarantee consistent two-way doors.
+        // If we call this before all the rooms are connected, someone may onnect to us and thus
+        // cause a one-way connection.
+        for (var i = 0; i < this.locations.length; i++) {
+            this.locations[i].setDirectionData();
         }
     },
 

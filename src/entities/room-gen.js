@@ -41,20 +41,20 @@ Crafty.c("RoomData", {
         targetRoom.numRoomsToConnect -= 1;
         switch (dir) {
             case "North": //Room is placed to the north of parent
-                this.S = roomId
-                targetRoom.N = this.id
-                break;
-            case "South": //Room is placed to the south of the parent
                 this.N = roomId
                 targetRoom.S = this.id
                 break;
-            case "East":
-                this.W = roomId
-                targetRoom.E = this.id
+            case "South": //Room is placed to the south of the parent
+                this.S = roomId
+                targetRoom.N = this.id
                 break;
-            case "West":
+            case "East":
                 this.E = roomId
                 targetRoom.W = this.id
+                break;
+            case "West":
+                this.W = roomId
+                targetRoom.E = this.id
         }
     },
 
@@ -109,6 +109,24 @@ Crafty.c("RoomData", {
                 this.doorDirections += 'w';
             }
         }
+    },
+
+    numConnections: function() {
+        var total = 0;
+        if (typeof(this.N) !== "undefined") { total++; }
+        if (typeof(this.S) !== "undefined") { total++; }
+        if (typeof(this.E) !== "undefined") { total++; }
+        if (typeof(this.W) !== "undefined") { total++; }
+        return total;
+    },
+
+    unconnectedDirections: function() {
+        var toReturn = [];
+        if (this.y > 0 && typeof(this.N) === "undefined") { toReturn.push("North"); }
+        if (this.y < map.height - 1 && typeof(this.S) === "undefined") { toReturn.push("South"); }
+        if (this.x < map.width - 1 && typeof(this.E) === "undefined") { toReturn.push("East"); }
+        if (this.x > 0 && typeof(this.W) === "undefined") { toReturn.push("West"); }
+        return toReturn;
     }
 });
 
