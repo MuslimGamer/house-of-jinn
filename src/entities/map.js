@@ -1,5 +1,25 @@
 map = {
     generate: function() {
+        this.generateAsymetricalMansion();
+    },
+
+    setRoomAt: function(x, y, room) {
+        var key = x + ", " + y;
+        this.roomPositions[key] = room;
+    },
+
+    getRoomAt: function(x, y) {
+        var key = x + ", " + y;
+        return this.roomPositions[key];
+    },
+	
+	findRoomWith: function(e) {
+		var x = Math.floor(e.x / parseInt(config("roomWidth")));
+		var y = Math.floor(e.y / parseInt(config("roomHeight")));
+		return map.getRoomAt(x, y);
+	},
+
+    generateAsymetricalMansion: function() {
         // Individual segments that may be a room or part of a room
         // eg. two adjacent locations without a dividing wall make up
         // a tall room. Three connected length-wise make a hallway.    
@@ -99,21 +119,5 @@ map = {
             //Set connection strings	
             currentRoom.setDirectionData();
         }
-    },
-
-    setRoomAt: function(x, y, room) {
-        var key = x + ", " + y;
-        this.roomPositions[key] = room;
-    },
-
-    getRoomAt: function(x, y) {
-        var key = x + ", " + y;
-        return this.roomPositions[key];
-    },
-	
-	findRoomWith: function(e) {
-		var x = Math.floor(e.x / parseInt(config("roomWidth")));
-		var y = Math.floor(e.y / parseInt(config("roomHeight")));
-		return map.getRoomAt(x, y);
-	}
+    }
 }
