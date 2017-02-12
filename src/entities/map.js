@@ -13,8 +13,7 @@ map = {
         this.width = 5;
         this.height = 5;
 
-        this.generateAsymmetricalMansion();
-        this.createRoomEntities();
+        this.generateAsymmetricalMansion();        
     },
 
     setRoomAt: function(x, y, room) {
@@ -211,7 +210,5 @@ map = {
             currentRoom.entity = newRoom;
             this.setRoomAt(currentRoom.x, currentRoom.y, newRoom);
         }
-
-        console.log("Created " + this.locations.length + " rooms.");
     }
 }

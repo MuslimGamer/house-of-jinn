@@ -9,7 +9,14 @@ Game = {
         // Game world is whatever fits on-screen
         Crafty.init(Game.view.width, Game.view.height);
         Crafty.background('#008800');
-        map.generate();
+
+        // horrible cop-out. TODO: fix this if there's time.
+        while (typeof(map.locations) === "undefined" || map.locations.length < 20) {
+            map.generate();
+        }
+        map.createRoomEntities();
+        console.log("Created " + map.locations.length + " rooms.");
+
         Crafty.viewport.clampToEntities = false; // Bubbler can cause camera to break
         var e = Crafty.e("Player");
 
