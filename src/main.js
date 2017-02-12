@@ -8,7 +8,7 @@ Game = {
     start: function() {
         // Game world is whatever fits on-screen
         Crafty.init(Game.view.width, Game.view.height);
-        Crafty.background('#008800');
+        Crafty.background('#663300');
 
         // horrible cop-out. TODO: fix this if there's time.
         while (typeof(map.locations) === "undefined" || map.locations.length < 20) {

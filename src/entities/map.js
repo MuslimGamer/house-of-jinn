@@ -198,6 +198,10 @@ map = {
     createRoomEntities: function() {
         var roomWidth = config("roomWidth");
         var roomHeight = config("roomHeight");
+        var minX = 99999;
+        var maxX = 0;
+        var minY = 99999;
+        var maxY = 0;
 
         for (var roomIndex = 0; roomIndex < this.locations.length; roomIndex++) {
             var currentRoom = this.locations[roomIndex];
@@ -209,6 +213,31 @@ map = {
             newRoom.data = currentRoom;
             currentRoom.entity = newRoom;
             this.setRoomAt(currentRoom.x, currentRoom.y, newRoom);
+
+            if (currentRoom.x < minX) {
+                minX = currentRoom.x;
+            }
+            if (currentRoom.x > maxX) {
+                maxX = currentRoom.x;
+            }
+            if (currentRoom.y < minY) {
+                minY = currentRoom.y;
+            }
+            if (currentRoom.y > maxY) {
+                maxY = currentRoom.y;
+            }
+        }
+
+        // Fill any gaps between rooms with darkness
+        for (var y = minY; y <= maxY; y++) {
+            for (var x = minX; x <= maxX; x++) {
+                var room = map.getRoomAt(x, y);
+                if (typeof(room) === "undefined") {
+                    // Grass patch. Darkness it.
+                    Crafty.e("Darkness").move(x * roomWidth, y * roomHeight);
+                    console.log("patched at " + x + ", " + y);
+                }
+            }
         }
     }
 }

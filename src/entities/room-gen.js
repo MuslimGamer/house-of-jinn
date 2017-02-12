@@ -111,6 +111,7 @@ Crafty.c("RoomData", {
         }
     },
 
+    // Only used for symmetrical maps
     numConnections: function() {
         var total = 0;
         if (typeof(this.N) !== "undefined") { total++; }
@@ -120,6 +121,7 @@ Crafty.c("RoomData", {
         return total;
     },
 
+    // Only used for symmetrical maps
     unconnectedDirections: function() {
         var toReturn = [];
         if (this.y > 0 && typeof(this.N) === "undefined") { toReturn.push("North"); }
