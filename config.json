@@ -11,5 +11,6 @@ externs = {
     "bubblerSpawnsEveryNSeconds": 0.1,
     "bubblerSpawnLifespanSeconds": 2,
     "bubblerSpawnVelocity": 5,
-    "jinns": ["Bubbler"]
+    "jinns": ["Bubbler"],
+    "jinnStone": true
 }

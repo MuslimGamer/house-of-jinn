@@ -20,10 +20,15 @@ Game = {
         Crafty.viewport.clampToEntities = false; // Bubbler can cause camera to break
         var e = Crafty.e("Player");
 
-        // var jinnsToSpawn = config("jinns");
-        // for (var i = 0; i < jinnsToSpawn.length; i++) {
-        //     var jinn = jinnsToSpawn[i];
-        //     Crafty.e(jinn + "Jinn");
+        var jinnsToSpawn = config("jinns");
+        for (var i = 0; i < jinnsToSpawn.length; i++) {
+            var jinn = jinnsToSpawn[i];
+            Crafty.e(jinn + "Jinn");
+        }
+
+        if (config("jinnStone") == true) {
+            Crafty.e("JinnStone");
+        }
     }
 }
 
