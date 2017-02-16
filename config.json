@@ -11,6 +11,9 @@ externs = {
     "bubblerSpawnsEveryNSeconds": 0.1,
     "bubblerSpawnLifespanSeconds": 2,
     "bubblerSpawnVelocity": 5,
-    "jinns": ["Bubbler"],
-    "jinnStone": true
+    "jinns": ["Wanderer"],
+    // Inventory stuff
+    "jinnStone": true,
+    "numberOfTraps": 3,
+    "trapTimeSeconds": 3
 }

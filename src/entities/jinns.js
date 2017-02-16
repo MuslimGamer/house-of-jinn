@@ -280,6 +280,7 @@ Crafty.c("Jinn", {
         var self = this;
         this.requires("Actor, Tween");
         this.collide("Player", this.gameOver);
+        this.trapped = false;
 
         // Start in a random room. Not near the edges.
         const BORDER_BUFFER = 16;
@@ -332,26 +333,54 @@ Crafty.c("Jinn", {
         t2.textColor("white");
     },
 
+    trap: function() {
+        this.trapped = true;
+        var self = this;
+
+        // Jinn forgets about us
+        this.huntingPlayer = false;
+        this.sawPlayer = false;
+
+        var stopImmediately = function() {
+            // Stop moving right now
+            self.cancelTween("x");
+            self.cancelTween("y");
+        }
+
+        // Supercede any commands to move
+        this.bind("EnterFrame", stopImmediately);
+
+        this.after(config("trapTimeSeconds"), function() { 
+            self.trapped = false;
+            self.unbind("EnterFrame", stopImmediately);
+            if (typeof(self.trapReleased) !== "undefined") {
+                self.trapReleased();
+            }
+         });        
+    },
+
     // Do this jinn thing where we move at a constant velocity toward our target.
     // Once it reaches, waits jinnWaitTimeSeconds (see config.json), then invokes
     // onArriveCallback.
     jinnMove: function(targetRoom, onArriveCallback) {
-        const BORDER_BUFFER = 16;
-        // Move into the room, but stay at least BORDER_BUFFER pixels away from the edges.
-        var targetX = randomBetween(targetRoom.x + BORDER_BUFFER, targetRoom.x + targetRoom.width - (2 * BORDER_BUFFER) - this.width());
-        var targetY = randomBetween(targetRoom.y + BORDER_BUFFER, targetRoom.y + targetRoom.height - (2 * BORDER_BUFFER) - this.height());
-        // move at a constant speed
-        var velocity = config("jinnVelocity");
-        var distanceInPixels = Math.sqrt(Math.pow(targetX - this.x, 2) + Math.pow(targetY - this.y, 2));
-        var travelTimeInSeconds = distanceInPixels / velocity;
-        this.move(targetX, targetY, travelTimeInSeconds);
+        if (!this.trapped) {
+            const BORDER_BUFFER = 16;
+            // Move into the room, but stay at least BORDER_BUFFER pixels away from the edges.
+            var targetX = randomBetween(targetRoom.x + BORDER_BUFFER, targetRoom.x + targetRoom.width - (2 * BORDER_BUFFER) - this.width());
+            var targetY = randomBetween(targetRoom.y + BORDER_BUFFER, targetRoom.y + targetRoom.height - (2 * BORDER_BUFFER) - this.height());
+            // move at a constant speed
+            var velocity = config("jinnVelocity");
+            var distanceInPixels = Math.sqrt(Math.pow(targetX - this.x, 2) + Math.pow(targetY - this.y, 2));
+            var travelTimeInSeconds = distanceInPixels / velocity;
+            this.move(targetX, targetY, travelTimeInSeconds);
 
-        // Calling pickNewTargetRoom recursively causes something to keep accumulating; we end up picking
-        // 1, 2, 4, 8, ... exponentially multiple targets at once. I tried everything and couldn't find
-        // any other way around this.
-        //
-        // Since we know the travel time, just wait that long, plus the delay time, and move again.
-        this.after(travelTimeInSeconds + config("jinnWaitTimeSeconds"), onArriveCallback);
+            // Calling pickNewTargetRoom recursively causes something to keep accumulating; we end up picking
+            // 1, 2, 4, 8, ... exponentially multiple targets at once. I tried everything and couldn't find
+            // any other way around this.
+            //
+            // Since we know the travel time, just wait that long, plus the delay time, and move again.
+            this.after(travelTimeInSeconds + config("jinnWaitTimeSeconds"), onArriveCallback);
+        }
     }
 });
 
