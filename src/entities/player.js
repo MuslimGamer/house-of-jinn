@@ -2,6 +2,7 @@ Crafty.c('Player', {
     init: function() {
         var self = this;
         this.keys = 0; // any key for any door
+        this.traps = config("numberOfTraps");
 
         this.requires("Actor")
             .size(32, 32)
@@ -30,6 +31,13 @@ Crafty.c('Player', {
                 console.log("Locked.");
             }
         });
+
+        this.keyPress(Crafty.keys.T, function() {
+            if (self.traps > 0) {
+                self.traps -= 1;
+                Crafty.e("JinnTrap");
+            }
+        })
 
         this.bind("Moved", function(oldPosition) {
         	Crafty.viewport.centerOn(this,100)
