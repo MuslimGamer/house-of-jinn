@@ -32,12 +32,8 @@ Crafty.c('Player', {
             }
         });
 
-        this.keyPress(Crafty.keys.T, function() {
-            if (self.traps > 0) {
-                self.traps -= 1;
-                Crafty.e("JinnTrap");
-            }
-        })
+        this.keyPress(Crafty.keys.T, function() { self.deployTrap(); });
+        this.keyPress(Crafty.keys.SPACE, function() { self.deployTrap(); });
 
         this.bind("Moved", function(oldPosition) {
         	Crafty.viewport.centerOn(this,100)
@@ -80,5 +76,12 @@ Crafty.c('Player', {
 
         // Pretend we moved: trigger lighting up the current room
         Crafty.trigger("Moved", { "axis": "x", "oldValue": this.x });
+    },
+
+    deployTrap: function() {
+        if (this.traps > 0) {
+            this.traps -= 1;
+            Crafty.e("JinnTrap");
+        }
     }
 });
