@@ -42,7 +42,14 @@ Crafty.c("Bubble", {
                     b.color("red");
                 })
             }
-        })
+        });
+
+        if (config("killSpawnOnTrap") == true) {
+            // Clones die when trapped
+            this.collide("JinnTrap", function() {
+                self.die();
+            });
+        }  
     },
 
     setParent: function(parent) {
@@ -143,7 +150,14 @@ Crafty.c("SplitterJinn", {
                     var now = new Date();
                     if (now - this.lastSplit >= config("splitterSplitsEveryNSeconds") * 1000) {
                         this.lastSplit = now;
+
                         var clone = Crafty.e("SplitterJinn").dontSplit();
+                        if (config("killSpawnOnTrap") == true) {
+                            // Clones die when trapped
+                            clone.collide("JinnTrap", function() {
+                                clone.die();
+                            });
+                        }                  
                         
                         var targetX = randomBetween(0, 100) < 50 ? -1 : 1;
                         var targetY = randomBetween(0, 100) < 50 ? -1 : 1;
@@ -348,7 +362,6 @@ Crafty.c("Jinn", {
 
         this.after(config("trapTimeSeconds"), function() { 
             self.trapped = false;
-            console.log("huntz?" + self.huntingPlayer);            
             self.unbind("EnterFrame", stopImmediately);
             if (typeof(self.trapReleased) !== "undefined") {
                 self.trapReleased();
@@ -412,7 +425,6 @@ Crafty.c("ChargePlayerOnSight", {
             var playerRoom = map.findRoomWith(player);
             if (myRoom == playerRoom) {
                 this.huntingPlayer = true;
-                console.log("HUNTZ!");
             }
         } else {
             this.chargeAtPlayer(this.chargeMultiplier || 1);
@@ -492,6 +504,10 @@ Crafty.c("WalkUntilSeesPlayer", {
         this.onSightCallback = null;
 
         this.bind("EnterFrame", function() {
+            if (this.trapped == true) {
+                return;
+            }
+
             var myRoom = map.findRoomWith(this);
             var playerRoom = map.findRoomWith(player);
 
