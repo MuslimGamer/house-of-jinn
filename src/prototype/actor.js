@@ -99,9 +99,11 @@ Crafty.c('Actor', {
     return this;
   },
 
+  // Fires callback once every time key is pressed down. If you press and hold
+  // down the appropriate key, it still invokes the callback only once.
   keyPress: function(key, callback) {
-    this.requires('Keyboard').bind('KeyDown', function() {
-      if (this.isDown(key)) {
+    this.requires('Keyboard').bind('KeyUp', function(e) {
+      if (e.key == key) {
         callback();
       }
     });
