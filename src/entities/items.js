@@ -40,7 +40,7 @@ Crafty.c("JinnStone", {
             if (closest < 99999) {
                 self.text("Closest jinn is " + closest + " rooms away");
             } else {
-                self.text("No jinns found nearby.");
+                self.text("No jinns nearby?");
             }
 
             // Stay in the top-left corner of the UI

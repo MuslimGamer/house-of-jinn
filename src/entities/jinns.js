@@ -337,10 +337,6 @@ Crafty.c("Jinn", {
         this.trapped = true;
         var self = this;
 
-        // Jinn forgets about us
-        this.huntingPlayer = false;
-        this.sawPlayer = false;
-
         var stopImmediately = function() {
             // Stop moving right now
             self.cancelTween("x");
@@ -352,11 +348,17 @@ Crafty.c("Jinn", {
 
         this.after(config("trapTimeSeconds"), function() { 
             self.trapped = false;
+            console.log("huntz?" + self.huntingPlayer);            
             self.unbind("EnterFrame", stopImmediately);
             if (typeof(self.trapReleased) !== "undefined") {
                 self.trapReleased();
             }
          });        
+
+         // Jinn forgets about us
+        this.huntingPlayer = false;
+        this.sawPlayer = false;
+        console.log("forgot")
     },
 
     // Do this jinn thing where we move at a constant velocity toward our target.
@@ -398,6 +400,10 @@ Crafty.c("ChargePlayerOnSight", {
     huntPlayer: function() {
         var player = Crafty("Player");
         
+        if (this.trapped == true) {
+            return;
+        }
+        
         if (this.huntingPlayer == false) {
             // Charge the player. This is a one-way process (we never go back
             // to wandering from room to room) because the player just doesn't
@@ -406,6 +412,7 @@ Crafty.c("ChargePlayerOnSight", {
             var playerRoom = map.findRoomWith(player);
             if (myRoom == playerRoom) {
                 this.huntingPlayer = true;
+                console.log("HUNTZ!");
             }
         } else {
             this.chargeAtPlayer(this.chargeMultiplier || 1);
