@@ -1,4 +1,3 @@
-
 Crafty.c("Room", {
     // Create a room precisely contained within this size
     create: function(x, y, width, height) {
@@ -8,14 +7,16 @@ Crafty.c("Room", {
         this.height = height;
         this.items = [];
         this.isLit = false;
+        this.data = null; // RoomData instance
 
-        var wallThickness = parseInt(config("wall_thickness"));
+        var wallThickness = parseInt(config("wallThickness"));
         this.floor = Crafty.e("Actor").size(width, height).move(x, y).color("grey");
         this.top = Crafty.e("WallWithDoorway").create(x, y, width, wallThickness);
         this.bottom = Crafty.e("WallWithDoorway").create(x, y + height - wallThickness, width, wallThickness);
         this.left = Crafty.e("WallWithDoorway").create(x, y, wallThickness, height);
         this.right = Crafty.e("WallWithDoorway").create(x + width - wallThickness, y, wallThickness, height);
         
+        this.darkness = Crafty.e("Darkness").move(this.x, this.y).size(this.width, this.height);
         return this;
     },
 
@@ -80,43 +81,94 @@ Crafty.c("Room", {
 
     // Add items to this room, randomly-positioned
     addItems: function(list) {
-        var wallThickness = parseInt(config("wall_thickness"));
+        var wallThickness = parseInt(config("wallThickness"));
         for (var i = 0; i < list.length; i++) {
             var item = list[i];
             var itemX = randomBetween(this.x + wallThickness, this.x + this.width - wallThickness);
             var itemY = randomBetween(this.y + wallThickness, this.y + this.height - wallThickness);
             this.items.push(Crafty.e(item).move(itemX, itemY));
         }
+        return this;
     },
 
     light: function() {
         if (!this.isLit) {
             this.isLit = true;
-            var darknessZ = Crafty.single("Darkness").z;
-
-            this.floor.z = darknessZ + 1;
-            this.top.z(darknessZ + 2);
-            this.bottom.z(darknessZ + 2);
-            this.left.z(darknessZ + 2);
-            this.right.z(darknessZ + 2);
-            for (var i = 0; i < this.items.length; i++) {
-                this.items[i].z = darknessZ + 2;
-            }
+            this.darkness.alpha = 0;
         }
+        return this;
     },
+
+    lightIfVisible: function(direction)
+    {
+        var roomIndex = null;
+
+        if (direction == "n") {
+            roomIndex = this.data.N;
+        } else if (direction == "e") {
+            roomIndex = this.data.E;
+        } else if (direction == "s") {
+            roomIndex = this.data.S;
+        } else if (direction == "w") {
+            roomIndex = this.data.W;
+        } else {
+            throw("Invalid direction: " + direction);
+        }
+
+        if (roomIndex != null && this.data.openDirections.indexOf(direction) > -1)
+        {
+            var room = map.locations[roomIndex]
+            map.getRoomAt(room.x, room.y).light();
+        }
+    },    
+
+    darkenIfVisible: function(direction)
+    {
+        var roomIndex = null;
+
+        if (direction == "n") {
+            roomIndex = this.data.N;
+        } else if (direction == "e") {
+            roomIndex = this.data.E;
+        } else if (direction == "s") {
+            roomIndex = this.data.S;
+        } else if (direction == "w") {
+            roomIndex = this.data.W;
+        } else {
+            throw("Invalid direction: " + direction);
+        }
+
+        if (roomIndex != null && this.data.openDirections.indexOf(direction) > -1)
+        {
+            var room = map.locations[roomIndex]
+            map.getRoomAt(room.x, room.y).darken();
+        }
+    },  
 
     darken: function() {
         if (this.isLit) {
             this.isLit = false;
-
-            this.floor.z = 0;
-            this.top.z(1);
-            this.bottom.z(1);
-            this.left.z(1);
-            this.right.z(1);
-            for (var i = 0; i < this.items.length; i++) {
-                this.items[i].z = 2;
-            }
+            // Fog-of-war style: once lit, a room is always "remembered" by being
+            // partially darkened only. Does this spoil it when jinns are inside?
+            this.darkness.alpha = 0.9;
         }
+        return this;
+    },
+
+    setupWalls: function(openDirections, wallDirections, doorDirections) {
+        this.open(openDirections);
+        this.seal(wallDirections);
+        this.door(doorDirections);
+        return this;
     }
+   //Call rooms to shift position, keeping player room in center of screen.
+   //Crafty view functions not yet working
+  /* position: function() {
+        this.floor.move(x, y);
+        this.top.move(x, y);
+        this.bottom.move(x, y + height - wallThickness);
+        this.left.move(x, y);
+        this.right.move(x + width - wallThickness, y);
+        return this;
+    }*/
 });
