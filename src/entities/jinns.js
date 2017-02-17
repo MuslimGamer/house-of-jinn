@@ -410,49 +410,50 @@ Crafty.c("Jinn", {
 Crafty.c("ChargePlayerOnSight", {
     init: function() {
         var player = Crafty("Player");
-        this.huntingPlayer = false;        
+        this.huntingPlayer = false;
+        this.lastCourseCorrection = new Date();
     },
 
     // Apply this in a binding to EnterFrame
     huntPlayer: function() {
-        var player = Crafty("Player");
-        
         if (this.trapped == true) {
             return;
         }
         
         if (this.huntingPlayer == false) {
-            // Charge the player. This is a one-way process (we never go back
-            // to wandering from room to room) because the player just doesn't
-            // have any chance of survival. Sorry, old man, it's game over.
+            // Charge the player.
             var myRoom = map.findRoomWith(this);
+            var player = Crafty("Player");            
             var playerRoom = map.findRoomWith(player);
+
             if (myRoom == playerRoom) {
                 this.huntingPlayer = true;
             }
         } else {
+            // Use the jinn's specific charge multiplier, or 1 as the default
+            // if no multiplier is specified.
             this.chargeAtPlayer(this.chargeMultiplier || 1);
         }
     },
 
     chargeAtPlayer: function(speedMultiplier) {
+
         if (typeof(speedMultiplier) === "undefined") {
             speedMultiplier = 1;
         }
-        var player = Crafty("Player");
-        this.cancelTween("x");
-        this.cancelTween("y");
-        // Calculating distance and moving at an appropriate speed is overrated.
-        // It's expensive, and we're doing this every frame. never mind that.
-        // Instead, just charge toward the player at a relatively fast rate.
-        // We're going to cancel and re-issue this tween every frame.
-        // We don't want to slow down when super close, so if Close Enough, move Super Fast.
 
-        // Since we're specifying travel time, divide by speed multiplier
-        if (Math.abs(this.x - player.x) + Math.abs(this.y - player.y) <= 150) {
-            this.move(player.x, player.y, config("jinnHuntPounceTweenTime") / speedMultiplier);
-        } else {
-            this.move(player.x, player.y, config("jinnHuntTweenTime") / speedMultiplier);
+        var now = new Date();
+        // Correct our velocity every 0.1s. Doing this every frame, well, kills us.
+        if (now - this.lastCourseCorrection >= 0.1 * 1000) {
+            this.cancelTween("x");
+            this.cancelTween("y");
+            var player = Crafty("Player");
+            var distance = Math.sqrt(Math.pow(this.x - player.x, 2) + Math.pow(this.y - player.y, 2));
+            // When hunting, jinns move at 2x
+            var speed = 2 * config("jinnVelocity");
+            var travelTime = distance / speed;
+            this.move(player.x, player.y, travelTime / speedMultiplier);
+            this.lastCourseCorrection = now;
         }
     }
 });
