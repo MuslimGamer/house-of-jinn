@@ -191,7 +191,7 @@ Crafty.c("JumperJinn", {
         this.requires("Jinn, Walker, ChargePlayerOnSight, WalkUntilSeesPlayer")
             .size(32, 32).color("#55aaff");
 
-        this.chargeMultiplier = 0.5;
+        this.chargeMultiplier = 0.5; // charge slowly
         var player = Crafty("Player");
 
         this.onSight(function() {
@@ -275,8 +275,9 @@ Crafty.c("WandererJinn", {
     init: function() {
         var self = this;
         this.requires("Jinn, ChargePlayerOnSight").size(64, 64).color("#aaffaa");
-        this.pickNewTargetRoom();
         this.bind("EnterFrame", this.huntPlayer);
+        this.onStartCallback = this.pickNewTargetRoom;
+        this.onStartCallback();
     },
 
     pickNewTargetRoom: function() {
@@ -312,6 +313,10 @@ Crafty.c("Jinn", {
         }
 
         this.move(startX, startY);
+        
+        // Called when a jinn is first created, and also when a trapped jinn is
+        // released. This method should make them start their "normal" behaviour.
+        this.onStartCallback = null;
     },
 
     gameOver: function() {
@@ -363,15 +368,14 @@ Crafty.c("Jinn", {
         this.after(config("trapTimeSeconds"), function() { 
             self.trapped = false;
             self.unbind("EnterFrame", stopImmediately);
-            if (typeof(self.trapReleased) !== "undefined") {
-                self.trapReleased();
+            if (self.onStartCallback != null) {
+                self.onStartCallback();
             }
          });        
 
          // Jinn forgets about us
         this.huntingPlayer = false;
         this.sawPlayer = false;
-        console.log("forgot")
     },
 
     // Do this jinn thing where we move at a constant velocity toward our target.
@@ -457,7 +461,12 @@ Crafty.c("ChargePlayerOnSight", {
 // walls which have doors in them).
 Crafty.c("Walker", {
     init: function() {
-        this.moving = false;
+        this.onStartCallback = function() {
+            // EnterFrame uses this to tell that it has to pick a new destination
+            this.moving = false;
+        };
+
+        this.onStartCallback();
     },
 
     moveToAdjacentRoom: function() {
