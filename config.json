@@ -11,5 +11,12 @@ externs = {
     "bubblerSpawnsEveryNSeconds": 0.1,
     "bubblerSpawnLifespanSeconds": 2,
     "bubblerSpawnVelocity": 5,
-    "jinns": ["Bubbler"]
+    "jinns": ["Bubbler"],
+    // Inventory stuff
+    "jinnStone": true,
+    "numberOfTraps": 3,
+    "trapTimeSeconds": 3,
+    // Do traps kill split-clones and bubbles?
+    // Note that the trap itself won't die.
+    "killSpawnOnTrap": true
 }
