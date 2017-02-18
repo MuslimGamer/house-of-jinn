@@ -16,6 +16,7 @@ Crafty.c("RoomData", {
     wallDirections: '',
     //Room attributes
     Type: 0, //Identification string for room type subclass
+    Colour: 0,
     //Room generation attributes
     Furniture: [],
     connectionType: [], //Types of rooms this room node can parent. Type can be repeated to increase probability of spawning
@@ -40,6 +41,10 @@ Crafty.c("RoomData", {
         this.numRoomsToConnect -= 1;
         var targetRoom = map.locations[roomId];
         targetRoom.numRoomsToConnect -= 1;
+        //this.connectionType=this.connectionType.splice(this.connectionType.indexOf(targetRoom.Type),1);
+        //targetRoom.connectionType = targetRoom.connectionType.splice(targetRoom.connectionType.indexOf(this.Type),1)
+        //currentRoom.connectionType=currentRoom.connectionType.splice(roomTypeSelect,1);
+        
         switch (dir) {
             case "North": //Room is placed to the north of parent
                 this.N = roomId
@@ -133,7 +138,9 @@ Crafty.c("Entrance", {
                 id: map.locations.length,
                 Type: "Entrance",
                 numRoomsToConnect: 3,
-                connectionType: ['Dining', 'Living', 'Hallway', 'Hallway', 'Hallway', 'Study']
+                connectionType: ['Living', 'Hallway', 'Hallway', 'Hallway', 'Study'],
+                Colour: 'yellow'
+            
 
             })
     }
@@ -146,7 +153,8 @@ Crafty.c("Hallway", {
                 id: map.locations.length,
                 Type: "Hallway",
                 numRoomsToConnect: 4,
-                connectionType: ['Hallway', 'Hallway', 'Dining', 'Kitchen', 'Living', 'Bed_Large', 'Bed_Small', 'Bath_Large', 'Study']
+                connectionType: ['Hallway','Hallway','Dining','Living', 'Bed','Bed', 'Bath', 'Study', 'Study'],
+                Colour: 'grey'
             })
     }
 });
@@ -158,8 +166,10 @@ Crafty.c("Living", {
             .attr({
                 id: map.locations.length,
                 Type: "Living",
-                numRoomsToConnect: 3,
-                connectionType: ['Dining', 'Living', 'Hallway', 'Hallway']
+                numRoomsToConnect: 4,
+                connectionType: ['Dining', 'Living','Study','Bed'],
+                Colour: 'green'
+            
             })
     }
 });
@@ -170,8 +180,9 @@ Crafty.c("Dining", {
             .attr({
                 id: map.locations.length,
                 Type: "Dining",
-                numRoomsToConnect: 2,
-                connectionType: ['Kitchen', 'Dining', 'Hallway', 'Hallway']
+                numRoomsToConnect: 3,
+                connectionType: ['Kitchen', 'Dining'],
+                Colour: 'brown'
 
             })
     }
@@ -183,8 +194,9 @@ Crafty.c("Kitchen", {
             .attr({
                 id: map.locations.length,
                 Type: "Kitchen",
-                numRoomsToConnect: 1,
-                connectionType: ["Kitchen"]
+                numRoomsToConnect: 2,
+                connectionType: [ 'Kitchen','Hallway'],
+                Colour: 'white'
             })
     }
 });
@@ -195,45 +207,36 @@ Crafty.c("Study", {
             .attr({
                 id: map.locations.length,
                 Type: "Study",
-                numRoomsToConnect: 1,
-                connectionType: ['Study', 'Hallway']
-            })
-    }
-});
-
-Crafty.c("Bed_Large", {
-    init: function() {
-        this.requires('RoomData')
-            .attr({
-                id: map.locations.length,
-                Type: "Bed_Large",
                 numRoomsToConnect: 2,
-                connectionType: ['Bed_Large', 'Bath_Large']
+                connectionType: ['Study','Hallway'],
+                Colour: 'olive'
             })
     }
 });
 
-Crafty.c("Bath_Large", {
+Crafty.c("Bed", {
     init: function() {
         this.requires('RoomData')
             .attr({
                 id: map.locations.length,
-                Type: "Bath_Large",
-                numRoomsToConnect: 1,
-                connectionType: ["Bath_Large"]
-
+                Type: "Bed",
+                numRoomsToConnect: 2,
+                connectionType: ['Bed', 'Bath','Study'],
+                Colour: 'aqua'
             })
     }
 });
 
-Crafty.c("Bed_Small", {
+Crafty.c("Bath", {
     init: function() {
         this.requires('RoomData')
             .attr({
                 id: map.locations.length,
-                Type: "Bed_Small",
+                Type: "Bath",
                 numRoomsToConnect: 1,
-                connectionType: []
+                connectionType: ["Bath"],
+                Colour: 'navy'
+
             })
     }
 });

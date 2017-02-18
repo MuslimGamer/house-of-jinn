@@ -138,7 +138,8 @@ map = {
                 var newRoomId = this.locations.length;
                 //Select room type from potential connectable array of room object
                 var roomTypeSelect = randomBetween(0, currentRoom.connectionType.length);
-                var roomType = currentRoom.connectionType[randomBetween(0, roomTypeSelect)];
+                var roomType = currentRoom.connectionType[roomTypeSelect];
+                
 
                 //Setup parameters for room placement functions
                 var dir = "";
@@ -172,7 +173,9 @@ map = {
 
                 //New room spawn
                 var newRoom = Crafty.e(roomType)
-
+                if (newRoom.Type!="Hallway"){
+                newRoom.numRoomsToConnect = Math.round(Math.random()*newRoom.numRoomsToConnect)
+                }
                 //Place room and test if location not yet occupied
                 var doesRoomExist = newRoom.at(x, y)
 
@@ -208,15 +211,18 @@ map = {
         var maxX = 0;
         var minY = 99999;
         var maxY = 0;
-
         for (var roomIndex = 0; roomIndex < this.locations.length; roomIndex++) {
             var currentRoom = this.locations[roomIndex];
+            
 
             var newRoom = Crafty.e("Room")
-                .create(currentRoom.x * roomWidth, currentRoom.y * roomHeight, roomWidth, roomHeight)
+            	.create(currentRoom.x * roomWidth, currentRoom.y * roomHeight, roomWidth, roomHeight)
                 .setupWalls(currentRoom.openDirections, currentRoom.wallDirections, currentRoom.doorDirections);
             
             newRoom.data = currentRoom;
+            
+            newRoom.floor.color(currentRoom.Colour)
+            
             currentRoom.entity = newRoom;
             this.setRoomAt(currentRoom.x, currentRoom.y, newRoom);
 

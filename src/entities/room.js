@@ -16,9 +16,28 @@ Crafty.c("Room", {
         this.left = Crafty.e("WallWithDoorway").create(x, y, wallThickness, height);
         this.right = Crafty.e("WallWithDoorway").create(x + width - wallThickness, y, wallThickness, height);
         
+        
+        
         this.darkness = Crafty.e("Darkness").move(this.x, this.y).size(this.width, this.height);
         return this;
     },
+    
+    open: function(directions) {
+        if (directions.indexOf("n") >= 0) {
+            this.top.open();
+        }
+        if (directions.indexOf("w") >= 0) {
+            this.left.open();
+        }
+        if (directions.indexOf("s") >= 0) {
+            this.bottom.open();
+        }
+        if (directions.indexOf("e") >= 0) {
+            this.right.open();
+        }
+        return this;
+    },
+
 
     // Seals off the gap in the given direction (nsew)
     seal: function(directions) {

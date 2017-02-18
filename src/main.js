@@ -15,6 +15,7 @@ Game = {
             map.generate();
         }
         map.createRoomEntities();
+
         console.log("Created " + map.locations.length + " rooms.");
 
         Crafty.viewport.clampToEntities = false; // Bubbler can cause camera to break

@@ -2,7 +2,7 @@ externs = {
     "roomWidth": 320,
     "roomHeight": 256,
     "wallThickness": 8,
-    "jinnVelocity": 100, // pixels per second
+    "jinnVelocity": 200, // pixels per second
     "jinnWaitTimeSeconds": 3,
 	"jinnHuntTweenTime": 1,
     "jinnHuntPounceTweenTime": 0.25,
@@ -11,9 +11,9 @@ externs = {
     "bubblerSpawnsEveryNSeconds": 0.1,
     "bubblerSpawnLifespanSeconds": 2,
     "bubblerSpawnVelocity": 5,
-    "jinns": ["Bubbler"],
+    "jinns": ["Walker"],
     // Inventory stuff
-    "jinnStone": true,
+    "jinnStone": false,
     "numberOfTraps": 3,
     "trapTimeSeconds": 3,
     // Do traps kill split-clones and bubbles?
