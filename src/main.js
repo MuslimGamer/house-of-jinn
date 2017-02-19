@@ -28,8 +28,10 @@ Game = {
         }
 
         if (config("jinnStone") == true) {
-            Crafty.e("JinnStone");
+            Crafty.e("JinnStone").uiOffset(16, 16);
         }
+
+        Crafty.e("OrphanCounter").uiOffset(16, 64);
     }
 }
 

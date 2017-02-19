@@ -15,7 +15,7 @@ Crafty.c("Key", {
 // Displays how close the closest jinn is, in number of rooms.
 Crafty.c("JinnStone", {
     init: function() {
-        this.requires("Text2").fontSize(48).text("").textColor("white");
+        this.requires("Text2, StayOnScreen").fontSize(48).text("").textColor("white");
         var player = Crafty("Player");
         var self = this;
         // Fast and cheap approximation: look at how many rooms
@@ -42,10 +42,6 @@ Crafty.c("JinnStone", {
             } else {
                 self.text("No jinns nearby?");
             }
-
-            // Stay in the top-left corner of the UI
-            self.x = -Crafty.viewport.x;
-            self.y = -Crafty.viewport.y;
         });
     }
 });
@@ -69,4 +65,35 @@ Crafty.c("JinnTrap", {
             jinn.trap();
         });
     }
-})
+});
+
+Crafty.c("OrphanCounter", {
+    // Do we really need this on every frame?
+    init: function() {
+        var self = this;
+        this.requires("Text2, StayOnScreen").fontSize(48).text("").textColor("white");
+
+        this.bind("EnterFrame", function() {
+            var orphansLeft = Crafty("Npc").length;
+            self.text(orphansLeft + " orphans left to rescue");
+        })
+    }
+});
+
+// Component for UI elements to stay on screen
+Crafty.c("StayOnScreen", {
+    init: function() {        
+        var self = this;
+        this.offsetX = 0;
+        this.offsetY = 0;
+        this.bind("EnterFrame", function() {
+            this.x = -Crafty.viewport.x + self.offsetX;
+            this.y = -Crafty.viewport.y + self.offsetY;
+        })
+    },
+
+    uiOffset: function(x, y) {
+        this.offsetX = x;
+        this.offsetY = y;
+    }
+});

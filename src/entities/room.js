@@ -16,8 +16,6 @@ Crafty.c("Room", {
         this.left = Crafty.e("WallWithDoorway").create(x, y, wallThickness, height);
         this.right = Crafty.e("WallWithDoorway").create(x + width - wallThickness, y, wallThickness, height);
         
-        
-        
         this.darkness = Crafty.e("Darkness").move(this.x, this.y).size(this.width, this.height);
         return this;
     },
