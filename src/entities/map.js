@@ -1,4 +1,3 @@
-
 map = {
     generate: function() {
         // Individual segments that may be a room or part of a room

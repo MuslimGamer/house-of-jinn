@@ -131,3 +131,16 @@ function queryParam(name) {
 function wait(seconds, callback) {
   Crafty.e('Delay').delay(callback, seconds * 1000);
 }
+
+// From: http://stackoverflow.com/questions/11935175/sampling-a-random-subset-from-an-array
+// Second (more performant) sample
+function getRandomSubset(arr, size) {
+    var shuffled = arr.slice(0), i = arr.length, min = i - size, temp, index;
+    while (i-- > min) {
+        index = Math.floor((i + 1) * Math.random());
+        temp = shuffled[index];
+        shuffled[index] = shuffled[i];
+        shuffled[i] = temp;
+    }
+    return shuffled.slice(min);
+}

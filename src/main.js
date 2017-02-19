@@ -5,6 +5,8 @@ Game = {
         height: window.innerHeight
     },
 
+    levelNumber: 1,
+
     start: function() {
         // Game world is whatever fits on-screen
         Crafty.init(Game.view.width, Game.view.height);
@@ -14,7 +16,10 @@ Game = {
         while (typeof(map.locations) === "undefined" || map.locations.length < 20) {
             map.generate();
         }
+
         map.createRoomEntities();
+        var numOrphans = 3 + (Game.levelNumber * 2);
+        Crafty.e("NpcGenerator").createOrphans(numOrphans);
 
         console.log("Created " + map.locations.length + " rooms.");
 
