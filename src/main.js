@@ -17,6 +17,8 @@ Game = {
             map.generate();
         }
 
+        map.createExit();
+
         map.createRoomEntities();
         var numOrphans = 3 + (Game.levelNumber * 2);
         Crafty.e("NpcGenerator").createOrphans(numOrphans);

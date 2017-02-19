@@ -178,14 +178,14 @@ Crafty.c("Room", {
         this.door(doorDirections);
         return this;
     }
-   //Call rooms to shift position, keeping player room in center of screen.
-   //Crafty view functions not yet working
-  /* position: function() {
-        this.floor.move(x, y);
-        this.top.move(x, y);
-        this.bottom.move(x, y + height - wallThickness);
-        this.left.move(x, y);
-        this.right.move(x + width - wallThickness, y);
-        return this;
-    }*/
+});
+
+Crafty.c("ExitStairs", {
+    init: function() {
+        this.requires("Actor").size(64, 64).color("black");
+        var self = this;
+        this.collide("Player", function() {
+
+        })
+    }
 });

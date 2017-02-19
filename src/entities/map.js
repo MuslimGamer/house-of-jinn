@@ -1,3 +1,4 @@
+
 map = {
     generate: function() {
         // Individual segments that may be a room or part of a room
@@ -13,7 +14,18 @@ map = {
         this.width = 5;
         this.height = 5;
 
-        this.generateAsymmetricalMansion();        
+        this.generateAsymmetricalMansion();
+    },
+
+    createExit: function() {
+        var exit = this.locations[0];
+        while (exit.Type == "Entrance") {
+            exit = this.locations[randomBetween(0, this.locations.length)];
+        }
+
+        exit.type = "Exit";
+        exit.Colour = "white";
+        console.log("Exit at " + exit.x + ",  " + exit.y);
     },
 
     setRoomAt: function(x, y, room) {
@@ -31,75 +43,6 @@ map = {
 		var y = Math.floor(e.y / parseInt(config("roomHeight")));
 		return map.getRoomAt(x, y);
 	},
-
-    generateSymmetricalMansion: function() {
-        var roomsWide = this.width;
-        var roomsHigh = this.height;
-
-        // generate a roomsHigh x roomsHigh mansion
-        // any room randomly on the top or bottom can be the entrance
-        var isTop = randomBetween(0, 100) < 50;
-        var entranceRoomX = parseInt(Math.floor(roomsWide / 2));
-        var entranceRoomY = isTop ? 0 : roomsHigh - 1;
-        
-        var roomWidth = config("roomWidth");
-        var roomHeight = config("roomHeight");
-
-        // Create a bunch of hallways. 
-        for (var roomY = 0; roomY < roomsHigh; roomY++) {
-            for (var roomX = 0; roomX < roomsWide; roomX++) {
-                var room = Crafty.e("Hallway");
-                room.x = roomX;
-                room.y = roomY;
-                this.locations.push(room);
-            }
-        }
-
-        // Set up connections and randomly pick types. There's no easy way to do
-        // this that guarantees everything is connected (all rooms are reachable),
-        // while maintaining requirements of which room can connect to which.
-        // We may end up changing a room type a few times, and connecting to a few
-        // more things than we should; that's okay. Right?
-
-        for (var roomY = 0; roomY < roomsHigh; roomY++) {
-            for (var roomX = 0; roomX < roomsWide; roomX++) {
-                var room = this.locations[roomY * roomsWide + roomX];
-                var type = room.Type;
-                for (var i = 0; i < room.numRoomsToConnect - room.numConnections(); i++) {
-                    var connectingRoomType = room.connectionType[randomBetween(0, room.connectionType.length)];
-                    var directions = room.unconnectedDirections();
-                    var direction = directions[randomBetween(0, directions.length)];
-                    var x = room.x;
-                    var y = room.y;
-                    switch (direction) {
-                        case "North":
-                            y -= 1;
-                            break;
-                        case "South":
-                            y += 1;
-                            break;
-                        case "East":
-                            x += 1;
-                            break;
-                        case "West":
-                            x -= 1;
-                            break;
-                    }
-                    var target = map.locations[y * map.width + x];
-                    target.Type = connectingRoomType;
-                    var targetIndex = this.locations.indexOf(target);
-                    room.connect(targetIndex, direction);
-                }
-            }
-        }
-
-        // Iterate and finally set direction data. This is to guarantee consistent two-way doors.
-        // If we call this before all the rooms are connected, someone may onnect to us and thus
-        // cause a one-way connection.
-        for (var i = 0; i < this.locations.length; i++) {
-            this.locations[i].setDirectionData();
-        }
-    },
 
     generateAsymmetricalMansion: function() {
         var newRoom = Crafty.e("Entrance");
@@ -138,7 +81,6 @@ map = {
                 //Select room type from potential connectable array of room object
                 var roomTypeSelect = randomBetween(0, currentRoom.connectionType.length);
                 var roomType = currentRoom.connectionType[roomTypeSelect];
-                
 
                 //Setup parameters for room placement functions
                 var dir = "";
@@ -203,17 +145,19 @@ map = {
         }
     },
 
+    // Creates the room entities (graphics). 
     createRoomEntities: function() {
         var roomWidth = config("roomWidth");
         var roomHeight = config("roomHeight");
+
         var minX = 99999;
         var maxX = 0;
         var minY = 99999;
         var maxY = 0;
+
         for (var roomIndex = 0; roomIndex < this.locations.length; roomIndex++) {
             var currentRoom = this.locations[roomIndex];
             
-
             var newRoom = Crafty.e("Room")
             	.create(currentRoom.x * roomWidth, currentRoom.y * roomHeight, roomWidth, roomHeight)
                 .setupWalls(currentRoom.openDirections, currentRoom.wallDirections, currentRoom.doorDirections);
@@ -224,6 +168,11 @@ map = {
             
             currentRoom.entity = newRoom;
             this.setRoomAt(currentRoom.x, currentRoom.y, newRoom);
+
+            if (currentRoom.type == "Exit") {
+                var stairs = Crafty.e("ExitStairs");
+                stairs.move(newRoom.x + (newRoom.width - stairs.width()) / 2, newRoom.y + (newRoom.height - stairs.height()) / 2);
+            }
 
             if (currentRoom.x < minX) {
                 minX = currentRoom.x;

@@ -64,7 +64,9 @@ Crafty.c("WallWithDoorway", {
     open: function(){
     	this.w1.destroy();
     	this.w2.destroy();
-    	
+    	if (this.filler != null) {
+            this.filler.destroy();
+        }
     },
 
     door: function() {
