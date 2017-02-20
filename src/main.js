@@ -20,7 +20,7 @@ Game = {
         map.createExit();
 
         map.createRoomEntities();
-        var numOrphans = 3 + (Game.levelNumber * 2);
+        var numOrphans = 1 + (Game.levelNumber * 2);
         Crafty.e("NpcGenerator").createOrphans(numOrphans);
 
         console.log("Created " + map.locations.length + " rooms.");

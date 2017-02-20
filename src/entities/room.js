@@ -185,7 +185,13 @@ Crafty.c("ExitStairs", {
         this.requires("Actor").size(64, 64).color("black");
         var self = this;
         this.collide("Player", function() {
-
+            var counter = Crafty("OrphanCounter");
+            if (counter.orphansLeft > 0) {
+                counter.textColor("red").after(1, function() { counter.textColor("white"); });
+            } else {
+                Crafty("Player").die();
+                Crafty.e("Text2, StayOnScreen").uiOffset(200, 200).fontSize(72).textColor("red").text("YOU WIN!");
+            }
         })
     }
 });

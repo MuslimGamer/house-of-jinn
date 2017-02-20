@@ -23,7 +23,7 @@ map = {
             exit = this.locations[randomBetween(0, this.locations.length)];
         }
 
-        exit.type = "Exit";
+        exit.Type = "Exit";
         exit.Colour = "white";
         console.log("Exit at " + exit.x + ",  " + exit.y);
     },
@@ -169,7 +169,7 @@ map = {
             currentRoom.entity = newRoom;
             this.setRoomAt(currentRoom.x, currentRoom.y, newRoom);
 
-            if (currentRoom.type == "Exit") {
+            if (currentRoom.Type == "Exit") {
                 var stairs = Crafty.e("ExitStairs");
                 stairs.move(newRoom.x + (newRoom.width - stairs.width()) / 2, newRoom.y + (newRoom.height - stairs.height()) / 2);
             }

@@ -13,7 +13,7 @@ externs = {
     "bubblerSpawnVelocity": 5,
     "jinns": ["Walker"],
     // Inventory stuff
-    "jinnStone": false,
+    "jinnStone": true,
     "numberOfTraps": 3,
     "trapTimeSeconds": 3,
     // Do traps kill split-clones and bubbles?

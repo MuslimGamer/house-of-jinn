@@ -74,8 +74,8 @@ Crafty.c("OrphanCounter", {
         this.requires("Text2, StayOnScreen").fontSize(48).text("").textColor("white");
 
         this.bind("EnterFrame", function() {
-            var orphansLeft = Crafty("Npc").length;
-            self.text(orphansLeft + " orphans left to rescue");
+            self.orphansLeft = Crafty("Npc").length;
+            self.text(self.orphansLeft + " orphans left to rescue");
         })
     }
 });
@@ -95,5 +95,6 @@ Crafty.c("StayOnScreen", {
     uiOffset: function(x, y) {
         this.offsetX = x;
         this.offsetY = y;
+        return this;
     }
 });

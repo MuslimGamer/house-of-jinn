@@ -196,7 +196,7 @@ Crafty.c("Kitchen", {
                 Type: "Kitchen",
                 numRoomsToConnect: 2,
                 connectionType: [ 'Kitchen','Hallway'],
-                Colour: 'white'
+                Colour: '#008800'
             })
     }
 });
